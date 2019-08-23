@@ -1,13 +1,13 @@
 apiVersion: 1.0.0
 metadata:
-  name: cnw-environment
+  name: wksp-debugging
 projects:
   - name: labs
     source:
-      type: git
       location: 'https://github.com/openshift-labs/cloud-native-labs.git'
+      type: git
+      branch: debugging
 components:
-  - type: chePlugin
-    id: redhat/java/latest
-  - id: redhat/vscode-openshift-connector/latest
+  - id: redhat/java/latest
     type: chePlugin
+    alias: java
