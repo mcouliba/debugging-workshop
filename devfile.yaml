@@ -11,3 +11,6 @@ components:
   - id: redhat/java/latest
     type: chePlugin
     alias: java
+  - id: redhat/vscode-openshift-connector/latest
+    type: chePlugin
+    alias: openshift-connector
