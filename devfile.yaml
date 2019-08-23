@@ -1,0 +1,11 @@
+apiVersion: 1.0.0
+metadata:
+  name: cnw-environment
+projects:
+  - name: labs
+    source:
+      type: git
+      location: 'https://github.com/openshift-labs/cloud-native-labs.git'
+components:
+  - type: chePlugin
+    id: redhat/java/latest
