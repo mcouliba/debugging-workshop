@@ -9,3 +9,5 @@ projects:
 components:
   - type: chePlugin
     id: redhat/java/latest
+  - id: redhat/vscode-openshift-connector/latest
+    type: chePlugin
