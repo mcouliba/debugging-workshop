@@ -4,7 +4,7 @@ metadata:
 projects:
   - name: labs
     source:
-      location: 'https://github.com/openshift-labs/cloud-native-labs.git'
+      location: 'https://github.com/mcouliba/cloud-native-labs.git'
       type: git
       branch: debugging
 components:
