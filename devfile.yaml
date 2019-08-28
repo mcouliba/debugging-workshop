@@ -14,3 +14,24 @@ components:
   - id: redhat/vscode-openshift-connector/latest
     type: chePlugin
     alias: openshift-connector
+commands:
+  - name: Connect to OpenShift
+    actions:
+      - type: exec
+        command: >-
+          oc login --server=$(oc whoami --show-server) -u ${CHE_WORKSPACE_NAMESPACE} 
+          -p openshift --insecure-skip-tls-verify && 
+          oc project coolstore${CHE_WORKSPACE_NAMESPACE#user}
+        component: openshift-connector
+  - name: Build your mysterious application
+    actions:
+      - type: exec
+        command: >-
+          apps_hostname_tmp=${CHE_API#http://che-eclipse-che.}
+          oc process -f /projects/labs/openshift/mysteriousapp.yml -p COOLSTORE_PROJECT=coolstore${CHE_WORKSPACE_NAMESPACE#user} 
+          -p APPS_HOSTNAME_SUFFIX=${apps_hostname_tmp%/api} | oc create -f - && 
+          oc start-build catalog-s2i --from-dir /projects/labs/catalog-spring-boot/ && 
+          oc start-build inventory-s2i --from-dir /projects/labs/inventory-thorntail/ && 
+          oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/ && 
+          oc start-build web --from-dir /projects/labs/web-nodejs/
+        component: openshift-connector
