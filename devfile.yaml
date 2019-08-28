@@ -27,9 +27,9 @@ commands:
     actions:
       - type: exec
         command: >-
-          apps_hostname_tmp=${CHE_API#http://che-eclipse-che.}
+          apps_hostname_tmp=${CHE_API#http://che-eclipse-che.} &&
           oc process -f /projects/labs/openshift/mysteriousapp.yml -p COOLSTORE_PROJECT=coolstore${CHE_WORKSPACE_NAMESPACE#user} 
-          -p APPS_HOSTNAME_SUFFIX=${apps_hostname_tmp%/api} | oc create -f - && 
+          -p APPS_HOSTNAME_SUFFIX=${apps_hostname_tmp%/api} | oc create -f -; 
           oc start-build catalog-s2i --from-dir /projects/labs/catalog-spring-boot/ && 
           oc start-build inventory-s2i --from-dir /projects/labs/inventory-thorntail/ && 
           oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/ && 
