@@ -35,3 +35,21 @@ commands:
           oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/ && 
           oc start-build web --from-dir /projects/labs/web-nodejs/
         component: openshift-connector
+  - name: Build and deploy Gateway Service
+    actions:
+      - type: exec
+        command: >-
+          oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/
+        component: openshift-connector
+  - name: Build and deploy Inventory Service
+    actions:
+      - type: exec
+        command: >-
+          oc start-build inventory-s2i --from-dir /projects/labs/inventory-thorntail/
+        component: openshift-connector
+  - name: Build and deploy Catalog Service
+    actions:
+      - type: exec
+        command: >-
+          oc start-build catalog-s2i --from-dir /projects/labs/catalog-spring-boot/
+        component: openshift-connector
