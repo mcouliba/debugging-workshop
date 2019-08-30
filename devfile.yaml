@@ -20,7 +20,7 @@ commands:
       - type: exec
         command: >-
           oc login --server=$(oc whoami --show-server) -u ${CHE_WORKSPACE_NAMESPACE} 
-          -p openshift --insecure-skip-tls-verify && 
+          -p 'r3dh4t1!' --insecure-skip-tls-verify && 
           oc project coolstore${CHE_WORKSPACE_NAMESPACE#user}
         component: openshift-connector
   - name: Build your mysterious application
