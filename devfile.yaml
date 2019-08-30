@@ -14,8 +14,39 @@ components:
   - id: redhat/vscode-openshift-connector/latest
     type: chePlugin
     alias: openshift-connector
+  - mountSources: true
+    memoryLimit: 512Mi
+    type: dockerimage
+    volumes:
+      - name: m2
+        containerPath: /home/user/.m2
+    alias: maven
+    image: 'quay.io/eclipse/che-java11-maven:7.0.0'
+    env:
+      - value: /home/user/.m2
+        name: MAVEN_CONFIG
+      - value: >-
+          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
+          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
+          -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/user
+        name: MAVEN_OPTS
+      - value: http://nexus.opentlc-shared.svc:8081/repository/maven-all-public
+        name: MAVEN_MIRROR_URL
+      - value: >-
+          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
+          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
+          -Xms20m -Djava.security.egd=file:/dev/./urandom
+        name: JAVA_OPTS
+      - value: >-
+          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
+          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
+          -Xms20m -Djava.security.egd=file:/dev/./urandom
+        name: JAVA_TOOL_OPTIONS
 commands:
-  - name: Connect to OpenShift
+  - name: oc login
     actions:
       - type: exec
         command: >-
@@ -23,7 +54,7 @@ commands:
           -p 'r3dh4t1!' --insecure-skip-tls-verify && 
           oc project coolstore${CHE_WORKSPACE_NAMESPACE#user}
         component: openshift-connector
-  - name: Build your mysterious application
+  - name: oc deploy mysterious application
     actions:
       - type: exec
         command: >-
@@ -35,21 +66,39 @@ commands:
           oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/ && 
           oc start-build web --from-dir /projects/labs/web-nodejs/
         component: openshift-connector
-  - name: Build and deploy Gateway Service
+  - name: oc build gateway service
     actions:
       - type: exec
         command: >-
           oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/
         component: openshift-connector
-  - name: Build and deploy Inventory Service
+  - name: oc build inventory service
     actions:
       - type: exec
         command: >-
           oc start-build inventory-s2i --from-dir /projects/labs/inventory-thorntail/
         component: openshift-connector
-  - name: Build and deploy Catalog Service
+  - name: oc build inventory catalog
     actions:
       - type: exec
         command: >-
           oc start-build catalog-s2i --from-dir /projects/labs/catalog-spring-boot/
         component: openshift-connector
+  - name: maven build gateway service
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/labs/gateway-vertx'
+        type: exec
+        command: 'mvn clean package'
+        component: maven
+  - name: maven build inventory service
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/labs/inventory-thorntail'
+        type: exec
+        command: 'mvn clean package'
+        component: maven
+  - name: maven build catalog service
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/labs/catalog-spring-boot'
+        type: exec
+        command: 'mvn clean package'
+        component: maven
