@@ -81,7 +81,7 @@ commands:
         command: >-
           oc start-build inventory-s2i --from-dir /projects/labs/inventory-thorntail/
         component: openshift-connector
-  - name: oc build inventory catalog
+  - name: oc build catalog service
     actions:
       - type: exec
         command: >-
