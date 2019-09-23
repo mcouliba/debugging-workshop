@@ -18,7 +18,7 @@ components:
     type: chePlugin
     alias: squash
   - mountSources: true
-    memoryLimit: 512Mi
+    memoryLimit: 2Gi
     type: dockerimage
     volumes:
       - name: m2
