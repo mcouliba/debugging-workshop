@@ -1,0 +1,195 @@
+== "You Are Not Alone"
+
+_15 MINUTES PRACTICE_
+
+image:{% image_path castaway.jpg  %}[Cast Away, 500]
+
+[.text-center]
+https://miro.medium.com/max/1160/1*icFdR5FcLVvYZDnC8PwePw.jpeg[Source: https://miro.medium.com/max/1160/1*icFdR5FcLVvYZDnC8PwePw.jpeg^]
+
+After a long and frustrated morning spending hours to solve an issue that a colleague, passing by chance with his/her 
+cup of coffee, fixed in literally 5 seconds, you are finally ready to start your normal working day when ...
+
+Your manager suddenly comes out of his/her office and walks to you with the very known face that saying *"You are in trouble!"*.
+Indeed, the new release of a ***Mysterious Application*** is planned for tonight (everything is always urgent) and it seems to contain some bugs.
+
+And of course, the developer who worked on this last release is now drinking some mojitos on the paradise island and you are the 
+only one available who can save the situation. Your manager points the source code https://github.com/mcouliba/cloud-native-labs/tree/debugging[Mysterious Application^] out, 
+gives you a gentle tap on the shoulder and says "Bon Courage!".
+
+At that moment in time, you feel like you are on an island, but not the same one than your colleague.
+
+Now you have to:
+
+* Identify the right tools to build and run the ***Mysterious Application***
+* Install them on your environment
+* Build your application which could be composed by several heterogeneous languages
+* Test, deploy, run it
+* ...
+
+Piouf!! Lots of things to do in a short period of time...
+
+*"No Worry Be Happy"*, Red Hat OpenShift Container Platform, Inc is here to help!!
+
+'''
+
+=== What is Eclipse Che?
+
+[sidebar]
+--
+image:{% image_path eclipseche.png %}[Eclipse Che, 400]
+
+https://www.eclipse.org/che/[Eclipse Che^] is a Kubernetes-native IDE and developer collaboration platform.
+
+As an open-source project, the core goals of https://www.eclipse.org/che/[Eclipse Che^]  are to:
+
+* **Accelerate project and developer onboarding:** As a zero-install development environment that runs in your browser, https://www.eclipse.org/che/[Eclipse Che^]  makes it easy for anyone to join your team and contribute to a project.
+* **Remove inconsistency between developer environments:** No more: “But it works on my machine.” Your code works exactly the same way in everyone’s environment.
+* **Provide built-in security and enterprise readiness:** As https://www.eclipse.org/che/[Eclipse Che^]  becomes a viable replacement for VDI solutions, it must be secure and it must support enterprise requirements, such as role-based access control and the ability to remove all source code from developer machines.
+
+To achieve those core goals, https://www.eclipse.org/che/[Eclipse Che^]  provides:
+
+* **Workspaces:** Container-based developer workspaces providing all the tools and dependencies needed to code, build, test, run, and debug applications.
+* **Browser-based IDEs:** Bundled browser-based IDEs with language tooling, debuggers, terminal, VCS integration, and much more.
+* **Extensible platform:** Bring your own IDE. Define, configure, and extend the tools that you need for your application by using plug-ins, which are compatible with Visual Studio Code extensions.
+* **Enterprise Integration:** Multi-user capabilities, including Keycloak for authentication and integration with LDAP or AD.
+--
+
+'''
+
+=== Getting your Developer Workspace with a single click
+
+https://www.eclipse.org/che/[Eclipse Che^]  will provide you an out-of-box 
+*Developer Workspace* with all the tools and the dependencies we need to do the job. **And with only one single click!**
+
+[NOTE]
+.Devfile
+====
+https://www.eclipse.org/che/[Eclipse Che^] uses https://www.eclipse.org/che/docs/che-7/making-a-workspace-portable-using-a-devfile/[Devfiles^] to automate the provisioning 
+of a specific workspace by defining:
+
+* projects to clone
+* browser IDE to use
+* preconfigured commands
+* tools that you need
+* application runtime definition
+
+Providing a https://github.com/mcouliba/debugging-workshop/blob/master/devfile.yaml[devfile.yaml^] file inside a Git source repository signals to https://www.eclipse.org/che/[Eclipse Che^] to configure the project and runtime according 
+to this file.
+====
+
+`*Click on the below button called 'Developer Workspace'*`
+
+[link={{ CHE_URL }}/dashboard/#/ide/{{ OPENSHIFT_USER }}/wksp-debugging]
+[window=_blank, align="center"]
+image::{% image_path developer-workspace-button.png  %}[Developer Workspace - Button, 300]
+
+Then `*login as {{ OPENSHIFT_USER }}/{{ OPENSHIFT_PASSWORD }}*`, `*click on 'Allow selected permissions'*` and let's the magic happens...
+
+image:{% image_path che-login.png %}[Che - Login, 500]
+
+image:{% image_path che-openshift-authorize-access.png %}[Che - OpenShift OAuth Authorize Access, 600]
+
+Once completed, you will have a fully functional Browser-based IDE within the source code already imported.
+
+image:{% image_path che-workspace.png %}[Che - Workspace, 800]
+
+'''
+
+=== Connect Your Workspace to Your OpenShift User
+
+First, you need to connect your {{ CHE_URL }}[Che Workspace^] to the OpenShift cluster.
+
+In your {{ CHE_URL }}[Workspace^], via the command menu (Cmd+Shift+P ⌘⇧P on macOS or Ctrl+Shift+P ⌃⇧P on Windows and Linux),
+`*run 'Task: Run Task...' ->  'che: oc login'*`
+
+image:{% image_path che-runtask.png %}[Che - RunTask, 500]
+
+image:{% image_path che-oclogin.png %}[Che - oc login, 500]
+
+[NOTE]
+.Command Info
+====
+The command **oc login --server={{ OPENSHIFT_API_URL }}:6443** is issued using the credentials `{{ OPENSHIFT_USER }}/{{ OPENSHIFT_PASSWORD }}`
+====
+
+You should get an output in the **'>_ oc login' Terminal Window** as following:
+
+[source,shell]
+.>_ oc login
+----
+Login successful.
+ 
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+ 
+  * {{ PROJECT }}
+    {{ INFRA_PROJECT }}
+    workspaceiwml5w542l456ja7
+
+Using project "{{ PROJECT }}".
+Already on project "{{ PROJECT }}" on server "https://172.30.0.1:443".
+----
+
+'''
+
+=== Build and Deploy the Mysterious Application
+
+Once logged, you can build and deploy the application to debug  on OpenShift.
+In your {{ CHE_URL }}[Workspace^], via the command menu (Cmd+Shift+P ⌘⇧P on macOS or Ctrl+Shift+P ⌃⇧P on Windows and Linux),
+`*run 'Task: Run Task...' ->  'che: oc deploy mysterious application'*`
+
+image:{% image_path che-runtask.png %}[Che - RunTask, 500]
+
+image:{% image_path che-ocdeployapp.png %}[Che - oc deploy the application, 500]
+
+[NOTE]
+.Command Info
+====
+First, the `*oc create*` command creates a list of objects defining the application. 
+
+Then, the `*oc start-build*` commands build container images of all microservices from the local source code and deploy them on OpenShift.
+
+This operation could take 5-10 minutes. Please, be patient :-)
+====
+
+You can observe the build and deployment progress from the {{ OPENSHIFT_CONSOLE_URL }}[OpenShift Web Console^].
+
+`*Access to the {{ OPENSHIFT_CONSOLE_URL }}[OpenShift Web Console^]*`. The first screen you will see is the authentication screen. 
+
+`*Enter your username and password ({{ OPENSHIFT_USER }}/{{ OPENSHIFT_PASSWORD }})*` and then log in. After you have authenticated to the web console, you will be presented with a
+list of projects that your user has permission to work with.
+
+`*Click on the {{ PROJECT }} project*` to be taken to the project overview page
+which will list all resources composing your project.
+
+In the left navigation menu, `*click on 'Workloads > Pods'*` to be taken to the pods overview page
+which will list all pods that you have running as part of your project.
+
+Once successfully built, deployed and runned on Openshift, **6 pods** of your application should be **Running and Ready** 
+and **10 pods or more completed** as following:
+
+image:{% image_path openshift-console-pods-1.png %}[Openshift Console, 700]
+image:{% image_path openshift-console-pods-2.png %}[Openshift Console, 700]
+
+`*Point your browser at the following application URL, http://{{ PROJECT }}.{{ APPS_HOSTNAME_SUFFIX }}[http://{{ PROJECT }}.{{ APPS_HOSTNAME_SUFFIX }}^]*`. 
+You should be able to see the Mysterious Application up and running.
+
+image:{% image_path coolstore-web.png %}[CoolStore Shop, 840]
+
+[IMPORTANT]
+====
+In order to generate traffic, please refresh this page several times.
+====
+
+'''
+
+=== CONGRATULATIONS!!!
+
+You find a friend *Wilson* aka OpenShift. Everything **seems** doing great but... 
+
+image:{% image_path castaway-wilson.jpg %}[Cast Away - Wilson, 500]
+
+[.text-center]
+https://i2.wp.com/metro.co.uk/wp-content/uploads/2015/12/wilson.jpg[Source: https://i2.wp.com/metro.co.uk/wp-content/uploads/2015/12/wilson.jpg^]
+
+You are now ready to tackle all the problem**S**!

@@ -2,106 +2,84 @@ apiVersion: 1.0.0
 metadata:
   name: wksp-debugging
 projects:
-  - name: labs
+  - name: workshop
     source:
-      location: 'https://github.com/mcouliba/cloud-native-labs.git'
+      location: 'https://github.com/mcouliba/debugging-workshop.git'
       type: git
-      branch: debugging
+      branch: "completed"
 components:
-  - id: redhat/java/latest
+  - id: redhat/workshop-tools/3.1
     type: chePlugin
-    alias: java
-  - id: redhat/vscode-openshift-connector/latest
-    type: chePlugin
-    alias: openshift-connector
-  - id: soloio/vscode-squash/latest
-    type: chePlugin
-    alias: squash
-  - mountSources: true
-    memoryLimit: 2Gi
-    type: dockerimage
-    volumes:
-      - name: m2
-        containerPath: /home/user/.m2
-    alias: maven
-    image: 'quay.io/eclipse/che-java11-maven:7.1.0'
-    env:
-      - value: /home/user/.m2
-        name: MAVEN_CONFIG
-      - value: >-
-          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
-          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
-          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
-          -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/user
-        name: MAVEN_OPTS
-      - value: http://nexus.opentlc-shared.svc:8081/repository/maven-all-public
-        name: MAVEN_MIRROR_URL
-      - value: >-
-          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
-          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
-          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
-          -Xms20m -Djava.security.egd=file:/dev/./urandom
-        name: JAVA_OPTS
-      - value: >-
-          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
-          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
-          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
-          -Xms20m -Djava.security.egd=file:/dev/./urandom
-        name: JAVA_TOOL_OPTIONS
+    alias: workshop-tools
 commands:
-  - name: oc login
+  - name: 'Inventory - Compile (Dev Mode)'
     actions:
-      - type: exec
-        command: >-
-          oc login --server=$(oc whoami --show-server) -u ${CHE_WORKSPACE_NAMESPACE} 
-          -p 'r3dh4t1!' --insecure-skip-tls-verify && 
-          oc project coolstore${CHE_WORKSPACE_NAMESPACE#user}
-        component: openshift-connector
-  - name: oc deploy mysterious application
-    actions:
-      - type: exec
-        command: >-
-          apps_hostname_tmp=${CHE_API#http://che-eclipse-che.} &&
-          oc process -f /projects/labs/openshift/mysteriousapp.yml -p COOLSTORE_PROJECT=coolstore${CHE_WORKSPACE_NAMESPACE#user} 
-          -p APPS_HOSTNAME_SUFFIX=${apps_hostname_tmp%/api} | oc create -f -; 
-          oc start-build catalog-s2i --from-dir /projects/labs/catalog-spring-boot/ && 
-          oc start-build inventory-s2i --from-dir /projects/labs/inventory-thorntail/ && 
-          oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/ && 
-          oc start-build web --from-dir /projects/labs/web-nodejs/
-        component: openshift-connector
-  - name: oc build gateway service
-    actions:
-      - type: exec
-        command: >-
-          oc start-build gateway-s2i --from-dir /projects/labs/gateway-vertx/
-        component: openshift-connector
-  - name: oc build inventory service
-    actions:
-      - type: exec
-        command: >-
-          oc start-build inventory-s2i --from-dir /projects/labs/inventory-thorntail/
-        component: openshift-connector
-  - name: oc build catalog service
-    actions:
-      - type: exec
-        command: >-
-          oc start-build catalog-s2i --from-dir /projects/labs/catalog-spring-boot/
-        component: openshift-connector
-  - name: maven build gateway service
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/labs/gateway-vertx'
+      - workdir: /projects/workshop/labs/inventory-quarkus
         type: exec
-        command: 'mvn clean package'
-        component: maven
-  - name: maven build inventory service
+        command: 'mvn compile quarkus:dev'
+        component: workshop-tools
+  - name: 'Inventory - Build'
     actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/labs/inventory-thorntail'
+      - workdir: /projects/workshop/labs/inventory-quarkus
         type: exec
-        command: 'mvn clean package'
-        component: maven
-  - name: maven build catalog service
+        command: mvn clean package -DskipTests
+        component: workshop-tools
+  - name: 'Catalog - Build'
     actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/labs/catalog-spring-boot'
+      - workdir: /projects/workshop/labs/catalog-spring-boot
         type: exec
-        command: 'mvn clean package'
-        component: maven
+        command: mvn clean package -DskipTests
+        component: workshop-tools
+  - name: 'Catalog - Run'
+    actions:
+      - workdir: /projects/workshop/labs/catalog-spring-boot
+        type: exec
+        command: mvn spring-boot:run
+        component: workshop-tools
+  - name: 'Gateway - Build'
+    actions:
+      - workdir: /projects/workshop/labs/gateway-vertx
+        type: exec
+        command: 'mvn clean package -DskipTests'
+        component: workshop-tools
+  - name: 'GitOps - Export'
+    actions:
+      - workdir: /projects/workshop/labs/gitops
+        type: exec
+        command: ./gitops_exporter.sh my-project${CHE_WORKSPACE_NAMESPACE#user} cn-project${CHE_WORKSPACE_NAMESPACE#user}
+        component: workshop-tools
+  - name: 'Gateway - Generate Traffic'
+    actions:
+      - workdir: /projects/workshop/labs/scripts
+        type: exec
+        command: ./runGatewayService.sh cn-project${CHE_WORKSPACE_NAMESPACE#user}
+        component: workshop-tools
+  - name: 'Pipeline - Start Mine'
+    actions:
+      - type: exec
+        command: >-
+          echo "------ START ------" &&
+          tkn pipeline start my-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace cn-project${CHE_WORKSPACE_NAMESPACE#user} &&
+          echo "------  END  ------"
+        component: workshop-tools
+  - name: 'Pipeline - Start Full'
+    actions:
+      - type: exec
+        command: >-
+          echo "------ START ------" &&
+          tkn pipeline start application-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace cn-project${CHE_WORKSPACE_NAMESPACE#user} &&
+          echo "------  END  ------"
+        component: workshop-tools
+  - name: 'Service Mesh - Deploy'
+    actions:
+      - type: exec
+        command: >-
+          oc patch dc/inventory-coolstore --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}' &&
+          oc patch dc/inventory-coolstore --patch '{"spec": {"template": {"spec": {"containers": [{"name": "inventory-coolstore", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}' &&
+          oc rollout latest dc/inventory-coolstore &&
+          oc rollout pause dc/gateway-coolstore &&
+          oc patch dc/gateway-coolstore --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}' &&
+          oc patch dc/gateway-coolstore --patch '{"spec": {"template": {"spec": {"containers": [{"name": "gateway-coolstore", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}' &&
+          oc rollout resume dc/gateway-coolstore
+        component: workshop-tools
+  
