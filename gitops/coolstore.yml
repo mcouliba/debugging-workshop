@@ -1,0 +1,877 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+labels:
+  app: coolstore-template
+  template: coolstore-template
+message: |-
+  The following service(s) have been created in your project: .
+
+  For more information about using this template ....
+metadata:
+  name: coolstore-template
+objects:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      name: catalog
+      app: catalog
+    name: catalog
+  spec:
+    replicas: 1
+    selector:
+      name: catalog
+      app: catalog
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        labels:
+          app: catalog
+          name: catalog
+      spec:
+        containers:
+        - args:
+          - -c
+          - until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting
+            for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run
+          command:
+          - /bin/bash
+          env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: ${IMAGE_CATALOG}
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/health
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: catalog-coolstore
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9779
+            name: prometheus
+            protocol: TCP
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/health
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          securityContext:
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.alpha.openshift.io/wait-for-ready: "true"
+    generation: 2
+    labels:
+      app: catalog
+      version: v1.0
+    name: catalog-postgresql
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      name: catalog-postgresql
+    strategy:
+      activeDeadlineSeconds: 21600
+      recreateParams:
+        timeoutSeconds: 600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        labels:
+          app: catalog
+          name: catalog-postgresql
+          version: database-v1.0
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: catalog-postgresql
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: catalog-postgresql
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: catalog-postgresql
+          image: postgresql:9.6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+              - --live
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: catalog-postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: catalog-postgresql-data
+          emptyDir: {}
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:9.6
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    name: gateway
+  spec:
+    replicas: 1
+    selector:
+      name: gateway
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        labels:
+          name: gateway
+      spec:
+        containers:
+        - args:
+          - -c
+          - until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting
+            for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run
+          command:
+          - /bin/bash
+          env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: ${IMAGE_GATEWAY} 
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/health
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: gateway-coolstore
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9779
+            name: prometheus
+            protocol: TCP
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/health
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          securityContext:
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    name: inventory
+  spec:
+    selector:
+      name: inventory 
+    replicas: 1
+    revisionHistoryLimit: 2
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        labels:
+          name: inventory
+      spec:
+        containers:
+        - args:
+          - -c
+          - until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting
+            for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run
+          command:
+          - /bin/bash
+          env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: GC_MAX_METASPACE_SIZE
+            value: "300"
+          - name: JAVA_ARGS
+            value: -s /app/config/project-defaults.yml
+          image: ${IMAGE_INVENTORY}
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/node
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: inventory-coolstore
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9779
+            name: prometheus
+            protocol: TCP
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/node
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          securityContext:
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /app/config
+            name: volume-md4mb
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: inventory
+          name: volume-md4mb
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+    name: inventory-postgresql
+  spec:
+    replicas: 1
+    selector:
+      name: inventory-postgresql
+    strategy:
+      activeDeadlineSeconds: 21600
+      recreateParams:
+        timeoutSeconds: 600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        labels:
+          name: inventory-postgresql
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: inventory-postgresql
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: inventory-postgresql
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: inventory-postgresql
+          image: postgresql:9.6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+              - --live
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: inventory-postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: inventory-postgresql-data
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:9.6
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      prometheus.io/port: "9779"
+      prometheus.io/scrape: "true"
+    labels:
+      app: catalog
+      expose: "true"
+    name: catalog
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: catalog
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+    labels:
+      app: catalog
+    name: catalog-postgresql
+  spec:
+    ports:
+    - name: postgresql
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      name: catalog-postgresql
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      prometheus.io/port: "9779"
+      prometheus.io/scrape: "true"
+    labels:
+      app: gateway
+    name: gateway
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: gateway
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      prometheus.io/port: "9779"
+      prometheus.io/scrape: "true"
+    labels:
+      app: inventory
+      expose: "true"
+    name: inventory
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: inventory
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+    labels:
+      app: inventory
+      version: v1.0
+    name: inventory-postgresql
+  spec:
+    ports:
+    - name: postgresql
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      name: inventory-postgresql
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      app.openshift.io/vcs-ref: "3.0"
+      app.openshift.io/vcs-uri: https://github.com/mcouliba/cloud-native-workshop
+    labels:
+      app: web-coolstore
+    name: web-coolstore
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: web-coolstore
+      deploymentconfig: web-coolstore
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      alpha.image.policy.openshift.io/resolve-names: '*'
+      app.openshift.io/vcs-ref: "3.0"
+      app.openshift.io/vcs-uri: https://github.com/mcouliba/cloud-native-workshop
+      deployment.kubernetes.io/revision: "2"
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"web-coolstore:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"web-coolstore\")].image"}]'
+    generation: 2
+    labels:
+      app: web-coolstore
+    name: web-coolstore
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: web-coolstore
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: web-coolstore
+          deploymentconfig: web-coolstore
+      spec:
+        containers:
+        - image: ${IMAGE_WEB}
+          imagePullPolicy: Always
+          name: web-coolstore
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: v1
+  data:
+    application.properties: |
+      spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalog
+      spring.datasource.username=catalog
+      spring.datasource.password=catalog
+      spring.datasource.driver-class-name=org.postgresql.Driver
+      spring.jpa.hibernate.ddl-auto=create
+  kind: ConfigMap
+  metadata:
+    name: catalog
+- apiVersion: v1
+  data:
+    project-defaults.yml: |
+      swarm:
+        datasources:
+          data-sources:
+            InventoryDS:
+              driver-name: postgresql
+              connection-url: jdbc:postgresql://inventory-postgresql:5432/inventory
+              user-name: inventory
+              password: inventory
+              valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker
+              validate-on-match: true
+              background-validation: false
+              exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+  kind: ConfigMap
+  metadata:
+    name: inventory
+- apiVersion: v1
+  data:
+    database-name: Y2F0YWxvZw==
+    database-password: Y2F0YWxvZw==
+    database-user: Y2F0YWxvZw==
+  kind: Secret
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-database_name: '{.data[''database-name'']}'
+      template.openshift.io/expose-password: '{.data[''database-password'']}'
+      template.openshift.io/expose-username: '{.data[''database-user'']}'
+    labels:
+      app: catalog
+      version: v1.0
+    name: catalog-postgresql
+  type: Opaque
+- apiVersion: v1
+  data:
+    database-name: aW52ZW50b3J5
+    database-password: aW52ZW50b3J5
+    database-user: aW52ZW50b3J5
+  kind: Secret
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-database_name: '{.data[''database-name'']}'
+      template.openshift.io/expose-password: '{.data[''database-password'']}'
+      template.openshift.io/expose-username: '{.data[''database-user'']}'
+    labels:
+      app: inventory
+      version: v1.0
+    name: inventory-postgresql
+  type: Opaque
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    labels:
+      app: catalog
+      template: postgresql-persistent-template
+      version: v1.0
+    name: catalog-postgresql
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    labels:
+      app: inventory
+      template: postgresql-persistent-template
+      version: v1.0
+    name: inventory-postgresql
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+- apiVersion: networking.istio.io/v1alpha3
+  kind: Gateway
+  metadata:
+    name: istio-gateway
+  spec:
+    selector:
+      istio: ingressgateway # use Istio default gateway implementation
+    servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - "*"
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: gateway
+  spec:
+    hosts:
+    - "*"
+    gateways:
+    - istio-gateway
+    http:
+    - match:
+      - uri:
+          prefix: /${COOLSTORE_PROJECT}/api
+      rewrite:
+        uri: "/api"
+      route:
+      - destination:
+          port:
+            number: 8080
+          host: gateway
+- apiVersion: networking.istio.io/v1alpha3
+  kind: Gateway
+  metadata:
+    name: web-gateway
+  spec:
+    selector:
+      istio: ingressgateway # use istio default controller
+    servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - ${COOLSTORE_PROJECT}.${APPS_HOSTNAME_SUFFIX}
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: web
+  spec:
+    hosts:
+    - "*"
+    gateways:
+    - web-gateway
+    http:
+    - route:
+      - destination:
+          host: web-coolstore
+          port:
+            number: 8080
+parameters:
+- description: The name catalog image to use.
+  displayName: Image catalog
+  name: IMAGE_CATALOG
+  required: true
+  value: quay.io/dwojciec/catalog-coolstore:v1
+- description: The name gateway image to use.
+  displayName: Image gateway
+  name: IMAGE_GATEWAY
+  required: true
+  value: quay.io/dwojciec/gateway-coolstore:v1
+- description: The name inventory image to use.
+  displayName: Image inventory
+  name: IMAGE_INVENTORY
+  required: true
+  value: quay.io/dwojciec/inventory-coolstore:v1
+- description: The name web image to use.
+  displayName: Image web
+  name: IMAGE_WEB
+  required: true
+  value: quay.io/dwojciec/web-coolstore:v1
+- description: Coolstore Project Name
+  name: COOLSTORE_PROJECT
+  value: staging-project1
+  required: true
+- description: Application Hostname Suffix URL
+  name: APPS_HOSTNAME_SUFFIX
+  required: true
+  value: apps.cluster-montpell-6d86.montpell-6d86.sandbox52.opentlc.com
