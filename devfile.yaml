@@ -6,7 +6,7 @@ projects:
     source:
       location: 'https://github.com/mcouliba/debugging-workshop.git'
       type: git
-      branch: "completed"
+      branch: "3.1"
 components:
   - id: redhat/workshop-tools/3.1
     type: chePlugin
