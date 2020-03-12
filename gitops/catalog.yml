@@ -4,9 +4,12 @@ items:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
+    annotations:
+    app.openshift.io/connects-to: catalog-postgresql
     labels:
       name: catalog
       app: coolstore
+      app.kubernetes.io/part-of: coolstore
     name: catalog
   spec:
     replicas: 1
