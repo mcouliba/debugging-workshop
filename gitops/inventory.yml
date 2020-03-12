@@ -12,10 +12,10 @@ items:
       app.kubernetes.io/part-of: coolstore
     name: inventory
   spec:
+    replicas: 0
     selector:
       name: inventory 
       app: coolstore
-    replicas: 0
     revisionHistoryLimit: 2
     strategy:
       activeDeadlineSeconds: 21600
@@ -38,7 +38,8 @@ items:
         annotations:
           sidecar.istio.io/inject: "true"
         labels:
-          name: inventory
+          name: inventory 
+          app: coolstore
       spec:
         containers:
         - args:
