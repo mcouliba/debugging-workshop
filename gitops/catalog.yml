@@ -60,7 +60,7 @@ items:
               command:
               - curl
               - -f
-              - http://127.0.0.1:8080/health
+              - http://127.0.0.1:8080/actuator/health
             failureThreshold: 3
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -82,7 +82,7 @@ items:
               command:
               - curl
               - -f
-              - http://127.0.0.1:8080/health
+              - http://127.0.0.1:8080/actuator/health
             failureThreshold: 3
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -110,7 +110,6 @@ items:
     annotations:
       openshift.io/generated-by: OpenShiftNewApp
       template.alpha.openshift.io/wait-for-ready: "true"
-    generation: 2
     labels:
       app: coolstore
       version: v1.0
@@ -159,7 +158,8 @@ items:
               secretKeyRef:
                 key: database-name
                 name: catalog-postgresql
-          image: postgresql:9.6
+          image: >-	
+            image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:e25e66d7356e0ab8f7d443a8f4344e87a323c11d1957030a2f6b93f23bbe6d0b
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
