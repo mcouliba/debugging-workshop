@@ -5,7 +5,7 @@ items:
   kind: DeploymentConfig
   metadata:
     annotations:
-      app.openshift.io/connects-to: catalog-postgresql
+      app.openshift.io/connects-to: inventory-mariadb
     labels:
       name: inventory
       app: coolstore
