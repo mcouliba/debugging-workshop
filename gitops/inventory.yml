@@ -113,6 +113,111 @@ items:
             defaultMode: 420
             name: inventory
           name: volume-app-config
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    name: inventory-mariadb
+    labels:
+      template: mariadb-ephemeral-template
+      app.kubernetes.io/part-of: coolstore
+  spec:
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    triggers:
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - mariadb
+          from:
+            kind: ImageStreamTag
+            namespace: openshift
+            name: 'mariadb:10.2'
+          lastTriggeredImage: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8
+      - type: ConfigChange
+    replicas: 1
+    revisionHistoryLimit: 10
+    test: false
+    selector:
+      name: inventory-mariadb
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: inventory-mariadb
+      spec:
+        volumes:
+          - name: inventory-mariadb-data
+            emptyDir: {}
+        containers:
+          - resources:
+              limits:
+                memory: 512Mi
+            readinessProbe:
+              exec:
+                command:
+                  - /bin/sh
+                  - '-i'
+                  - '-c'
+                  - >-
+                    MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER
+                    -D $MYSQL_DATABASE -e 'SELECT 1'
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+            terminationMessagePath: /dev/termination-log
+            name: mariadb
+            livenessProbe:
+              tcpSocket:
+                port: 3306
+              initialDelaySeconds: 30
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+            env:
+              - name: MYSQL_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-user
+              - name: MYSQL_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-password
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-root-password
+              - name: MYSQL_DATABASE
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-name
+            ports:
+              - containerPort: 3306
+                protocol: TCP
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - name: inventory-mariadb-data
+                mountPath: /var/lib/mysql/data
+            terminationMessagePolicy: File
+            image: >-
+              image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        dnsPolicy: ClusterFirst
+        securityContext: {}
+        schedulerName: default-scheduler
 - apiVersion: v1
   kind: Service
   metadata:
@@ -133,6 +238,25 @@ items:
       app: inventory
     sessionAffinity: None
     type: ClusterIP
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: inventory-mariadb
+    labels:
+      template: mariadb-ephemeral-template
+      template.openshift.io/template-instance-owner: a8b6b917-71cf-442a-a631-a839a7fd75f4
+    annotations:
+      template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
+  spec:
+    ports:
+      - name: mariadb
+        protocol: TCP
+        port: 3306
+        targetPort: 3306
+    selector:
+      name: inventory-mariadb
+    type: ClusterIP
+    sessionAffinity: None
 - apiVersion: v1
   data:
     application.properties: |
@@ -142,3 +266,21 @@ items:
   kind: ConfigMap
   metadata:
     name: inventory
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: inventory-mariadb
+    labels:
+      template: mariadb-ephemeral-template
+      template.openshift.io/template-instance-owner: a8b6b917-71cf-442a-a631-a839a7fd75f4
+    annotations:
+      template.openshift.io/expose-database_name: '{.data[''database-name'']}'
+      template.openshift.io/expose-password: '{.data[''database-password'']}'
+      template.openshift.io/expose-root_password: '{.data[''database-root-password'']}'
+      template.openshift.io/expose-username: '{.data[''database-user'']}'
+  data:
+    database-name: aW52ZW50b3J5ZGI=
+    database-password: aW52ZW50b3J5
+    database-root-password: aW52ZW50b3J5
+    database-user: aW52ZW50b3J5
+  type: Opaque
