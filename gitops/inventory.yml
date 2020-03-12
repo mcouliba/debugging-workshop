@@ -10,6 +10,7 @@ items:
       name: inventory
       app: coolstore
       app.kubernetes.io/part-of: coolstore
+    name: inventory
   spec:
     selector:
       name: inventory 
