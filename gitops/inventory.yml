@@ -61,7 +61,7 @@ items:
               command:
               - curl
               - -f
-              - http://127.0.0.1:8080/node
+              - http://127.0.0.1:8080/health/live
             failureThreshold: 3
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -83,7 +83,7 @@ items:
               command:
               - curl
               - -f
-              - http://127.0.0.1:8080/node
+              - http://127.0.0.1:8080/health/ready
             failureThreshold: 3
             initialDelaySeconds: 30
             periodSeconds: 10
