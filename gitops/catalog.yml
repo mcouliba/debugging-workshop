@@ -257,7 +257,7 @@ items:
 - apiVersion: v1
   data:
     application.properties: |
-      spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalog
+      spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalogdb
       spring.datasource.username=catalog
       spring.datasource.password=catalog
       spring.datasource.driver-class-name=org.postgresql.Driver
