@@ -4,9 +4,12 @@ items:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
-    name: inventory
-    app: coolstore
-    app.kubernetes.io/part-of: coolstore
+    annotations:
+      app.openshift.io/connects-to: catalog-postgresql
+    labels:
+      name: inventory
+      app: coolstore
+      app.kubernetes.io/part-of: coolstore
   spec:
     selector:
       name: inventory 
