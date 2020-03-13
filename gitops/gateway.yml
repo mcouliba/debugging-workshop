@@ -26,8 +26,7 @@ items:
     template:
       metadata:
         annotations:
-          alpha.image.policy.openshift.io/resolve-names: '*'
-        creationTimestamp: null
+          sidecar.istio.io/inject: "true"
         labels:
           app: coolstore
           app.kubernetes.io/instance: gateway
