@@ -308,7 +308,7 @@ items:
       app: coolstore
       app.kubernetes.io/instance: inventory
       app.kubernetes.io/part-of: coolstore
-    name: inventory-coolstore-8080
+    name: inventory-8080
   type: Opaque
 - apiVersion: v1
   data:
@@ -322,7 +322,7 @@ items:
       app: coolstore
       app.kubernetes.io/instance: inventory
       app.kubernetes.io/part-of: coolstore
-    name: inventory-coolstore-8443
+    name: inventory-8443
   type: Opaque
 - apiVersion: v1
   data:
@@ -336,5 +336,5 @@ items:
       app: coolstore
       app.kubernetes.io/instance: inventory
       app.kubernetes.io/part-of: coolstore
-    name: inventory-coolstore-8778
+    name: inventory-8778
   type: Opaque
