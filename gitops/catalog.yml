@@ -245,7 +245,7 @@ items:
       template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
     labels:
       app: coolstore
-      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/instance: catalog-postgresql
       app.kubernetes.io/part-of: coolstore
     name: catalog-postgresql
   spec:
@@ -256,7 +256,7 @@ items:
       targetPort: 5432
     selector:
       app: coolstore
-      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/instance: catalog-postgresql
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: v1
