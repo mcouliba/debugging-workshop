@@ -7,15 +7,15 @@ items:
     annotations:
       app.openshift.io/connects-to: catalog-postgresql
     labels:
-      name: catalog
       app: coolstore
+      app.kubernetes.io/instance: catalog
       app.kubernetes.io/part-of: coolstore
     name: catalog
   spec:
     replicas: 1
     selector:
-      name: catalog
       app: coolstore
+      app.kubernetes.io/instance: catalog
     strategy:
       activeDeadlineSeconds: 21600
       resources:
@@ -38,7 +38,7 @@ items:
           sidecar.istio.io/inject: "true"
         labels:
           app: coolstore
-          name: catalog
+          app.kubernetes.io/instance: catalog
       spec:
         containers:
         - args:
@@ -112,7 +112,7 @@ items:
       template.alpha.openshift.io/wait-for-ready: "true"
     labels:
       app: coolstore
-      version: v1.0
+      app.kubernetes.io/instance: catalog
       app.kubernetes.io/part-of: coolstore
     name: catalog-postgresql
   spec:
@@ -223,7 +223,8 @@ items:
       prometheus.io/scrape: "true"
     labels:
       app: coolstore
-      expose: "true"
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
     name: catalog
   spec:
     ports:
@@ -233,6 +234,8 @@ items:
       targetPort: 8080
     selector:
       app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: v1
@@ -243,6 +246,8 @@ items:
       template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
     labels:
       app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
     name: catalog-postgresql
   spec:
     ports:
@@ -265,6 +270,10 @@ items:
   kind: ConfigMap
   metadata:
     name: catalog
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
 - apiVersion: v1
   data:
     database-name: Y2F0YWxvZ2Ri
@@ -279,6 +288,50 @@ items:
       template.openshift.io/expose-username: '{.data[''database-user'']}'
     labels:
       app: coolstore
-      version: v1.0
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
     name: catalog-postgresql
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_CATALOG_HOST: Y2F0YWxvZw==
+    COMPONENT_CATALOG_PORT: ODA4MA==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8080"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-coolstore-8080
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_CATALOG_HOST: Y2F0YWxvZw==
+    COMPONENT_CATALOG_PORT: ODQ0Mw==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8443"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-coolstore-8443
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_CATALOG_HOST: Y2F0YWxvZw==
+    COMPONENT_CATALOG_PORT: ODc3OA==
+  kind: Secret
+  metadata:
+    annotations:
+      app.kubernetes.io/component-source-type: binary
+      component-port: "8778"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-coolstore-8778
   type: Opaque

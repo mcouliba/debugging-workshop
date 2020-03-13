@@ -7,15 +7,15 @@ items:
     annotations:
       app.openshift.io/connects-to: inventory-mariadb
     labels:
-      name: inventory
       app: coolstore
+      app.kubernetes.io/instance: inventory
       app.kubernetes.io/part-of: coolstore
     name: inventory
   spec:
     replicas: 0
     selector:
-      name: inventory 
       app: coolstore
+      app.kubernetes.io/instance: inventory
     revisionHistoryLimit: 2
     strategy:
       activeDeadlineSeconds: 21600
@@ -118,7 +118,8 @@ items:
   metadata:
     name: inventory-mariadb
     labels:
-      template: mariadb-ephemeral-template
+      app: coolstore
+      app.kubernetes.io/instance: inventory
       app.kubernetes.io/part-of: coolstore
   spec:
     strategy:
@@ -225,8 +226,9 @@ items:
       prometheus.io/port: "9779"
       prometheus.io/scrape: "true"
     labels:
-      app: inventory
-      expose: "true"
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
     name: inventory
   spec:
     ports:
@@ -235,7 +237,9 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: inventory
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
     sessionAffinity: None
     type: ClusterIP
 - kind: Service
@@ -243,8 +247,9 @@ items:
   metadata:
     name: inventory-mariadb
     labels:
-      template: mariadb-ephemeral-template
-      template.openshift.io/template-instance-owner: a8b6b917-71cf-442a-a631-a839a7fd75f4
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
     annotations:
       template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
   spec:
@@ -266,13 +271,18 @@ items:
   kind: ConfigMap
   metadata:
     name: inventory
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
 - kind: Secret
   apiVersion: v1
   metadata:
     name: inventory-mariadb
     labels:
-      template: mariadb-ephemeral-template
-      template.openshift.io/template-instance-owner: a8b6b917-71cf-442a-a631-a839a7fd75f4
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
     annotations:
       template.openshift.io/expose-database_name: '{.data[''database-name'']}'
       template.openshift.io/expose-password: '{.data[''database-password'']}'
@@ -283,4 +293,46 @@ items:
     database-password: aW52ZW50b3J5
     database-root-password: aW52ZW50b3J5
     database-user: aW52ZW50b3J5
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_INVENTORY_HOST: aW52ZW50b3J5
+    COMPONENT_INVENTORY_PORT: ODA4MA==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8080"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    name: inventory-coolstore-8080
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_INVENTORY_HOST: aW52ZW50b3J5
+    COMPONENT_INVENTORY_PORT: ODQ0Mw==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8443"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    name: inventory-coolstore-8443
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_INVENTORY_HOST: aW52ZW50b3J5
+    COMPONENT_INVENTORY_PORT: ODc3OA==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8778"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    name: inventory-coolstore-8778
   type: Opaque
