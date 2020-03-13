@@ -255,7 +255,8 @@ items:
       protocol: TCP
       targetPort: 5432
     selector:
-      name: catalog-postgresql
+      app: coolstore
+      app.kubernetes.io/instance: catalog
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: v1

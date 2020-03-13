@@ -239,7 +239,6 @@ items:
     selector:
       app: coolstore
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
     sessionAffinity: None
     type: ClusterIP
 - kind: Service
@@ -259,7 +258,8 @@ items:
         port: 3306
         targetPort: 3306
     selector:
-      name: inventory-mariadb
+      app: coolstore
+      app.kubernetes.io/instance: inventory
     type: ClusterIP
     sessionAffinity: None
 - apiVersion: v1
