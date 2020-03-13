@@ -15,8 +15,8 @@ items:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
-      deploymentconfig: gateway
       app: coolstore
+      app.kubernetes.io/instance: gateway
     strategy:
       activeDeadlineSeconds: 21600
       recreateParams:
@@ -29,7 +29,6 @@ items:
           alpha.image.policy.openshift.io/resolve-names: '*'
         creationTimestamp: null
         labels:
-          deploymentconfig: gateway
           app: coolstore
           app.kubernetes.io/instance: gateway
       spec:
@@ -87,7 +86,9 @@ items:
       prometheus.io/port: "9779"
       prometheus.io/scrape: "true"
     labels:
-      app: gateway
+      app: coolstore
+      app.kubernetes.io/instance: gateway
+      app.kubernetes.io/part-of: coolstore
     name: gateway
   spec:
     ports:
@@ -96,6 +97,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: gateway
+      app: coolstore
+      app.kubernetes.io/instance: gateway
     sessionAffinity: None
     type: ClusterIP
