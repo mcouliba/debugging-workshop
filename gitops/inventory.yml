@@ -32,7 +32,7 @@ items:
         maxUnavailable: 25%
         timeoutSeconds: 3600
         updatePeriodSeconds: 1
-      type: Rolling
+      type: Recreate
     template:
       metadata:
         annotations:

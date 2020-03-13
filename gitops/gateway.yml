@@ -22,7 +22,7 @@ items:
       recreateParams:
         timeoutSeconds: 600
       resources: {}
-      type: Rolling
+      type: Recreate
     template:
       metadata:
         annotations:
