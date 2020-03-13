@@ -38,8 +38,8 @@ items:
         annotations:
           sidecar.istio.io/inject: "true"
         labels:
-          name: inventory 
           app: coolstore
+          app.kubernetes.io/instance: inventory
       spec:
         containers:
         - args:
