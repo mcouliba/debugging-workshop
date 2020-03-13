@@ -112,14 +112,15 @@ items:
       template.alpha.openshift.io/wait-for-ready: "true"
     labels:
       app: coolstore
-      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/instance: catalog-postgresql
       app.kubernetes.io/part-of: coolstore
     name: catalog-postgresql
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
-      name: catalog-postgresql
+      app: coolstore
+      app.kubernetes.io/instance: catalog-postgresql
     strategy:
       activeDeadlineSeconds: 21600
       recreateParams:
@@ -138,8 +139,7 @@ items:
           openshift.io/generated-by: OpenShiftNewApp
         labels:
           app: coolstore
-          name: catalog-postgresql
-          version: database-v1.0
+          app.kubernetes.io/instance: catalog-postgresql
       spec:
         containers:
         - env:
@@ -235,7 +235,6 @@ items:
     selector:
       app: coolstore
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: v1
