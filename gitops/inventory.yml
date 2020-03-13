@@ -119,7 +119,7 @@ items:
     name: inventory-mariadb
     labels:
       app: coolstore
-      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/instance: inventory-mariadb
       app.kubernetes.io/part-of: coolstore
   spec:
     strategy:
@@ -145,12 +145,14 @@ items:
     revisionHistoryLimit: 10
     test: false
     selector:
-      name: inventory-mariadb
+      app: coolstore
+      app.kubernetes.io/instance: inventory-mariadb
     template:
       metadata:
         creationTimestamp: null
         labels:
-          name: inventory-mariadb
+          app: coolstore
+          app.kubernetes.io/instance: inventory-mariadb
       spec:
         volumes:
           - name: inventory-mariadb-data
@@ -247,7 +249,7 @@ items:
     name: inventory-mariadb
     labels:
       app: coolstore
-      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/instance: inventory-mariadb
       app.kubernetes.io/part-of: coolstore
     annotations:
       template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
@@ -259,7 +261,7 @@ items:
         targetPort: 3306
     selector:
       app: coolstore
-      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/instance: inventory-mariadb
     type: ClusterIP
     sessionAffinity: None
 - apiVersion: v1
