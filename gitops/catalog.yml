@@ -115,6 +115,7 @@ items:
       app: coolstore
       app.kubernetes.io/instance: catalog-postgresql
       app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: postgresql
     name: catalog-postgresql
   spec:
     replicas: 1

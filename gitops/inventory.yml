@@ -122,6 +122,7 @@ items:
       app: coolstore
       app.kubernetes.io/instance: inventory-mariadb
       app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: mariadb
   spec:
     strategy:
       type: Recreate
