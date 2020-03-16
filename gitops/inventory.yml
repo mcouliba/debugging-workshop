@@ -16,7 +16,6 @@ items:
     selector:
       app: coolstore
       app.kubernetes.io/instance: inventory
-    revisionHistoryLimit: 2
     strategy:
       activeDeadlineSeconds: 21600
       resources:
