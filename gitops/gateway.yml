@@ -10,6 +10,7 @@ items:
       app: coolstore
       app.kubernetes.io/instance: gateway
       app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: java
     name: gateway
   spec:
     replicas: 1

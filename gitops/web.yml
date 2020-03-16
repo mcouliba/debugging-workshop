@@ -25,6 +25,7 @@ items:
         labels:
           app: coolstore
           app.kubernetes.io/instance: web
+          maistra.io/expose-route: "true"
       spec:
         containers:
           - name: web
@@ -67,3 +68,20 @@ items:
       app.kubernetes.io/instance: web
     sessionAffinity: None
     type: ClusterIP
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: web
+      app.kubernetes.io/name: nodejs
+      app.kubernetes.io/part-of: coolstore
+    name: web
+  spec:
+    port:
+      targetPort: http
+    to:
+      kind: Service
+      name: web
+      weight: 100
+    wildcardPolicy: None

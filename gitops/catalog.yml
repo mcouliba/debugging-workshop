@@ -10,6 +10,7 @@ items:
       app: coolstore
       app.kubernetes.io/instance: catalog
       app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: java
     name: catalog
   spec:
     replicas: 1
