@@ -79,7 +79,7 @@ items:
     name: web
   spec:
     port:
-      targetPort: http
+      targetPort: 8080-tcp
     to:
       kind: Service
       name: web
