@@ -2,16 +2,34 @@
 .project
 .classpath
 .settings/
+bin/
 
 # IntelliJ
-*.iml
-*.ipr
-*.iws
 .idea
+*.ipr
+*.iml
+*.iws
+
+# NetBeans
+nb-configuration.xml
+
+# Visual Studio Code
+.vscode
+
+# OSX
+.DS_Store
+
+# Vim
+*.swp
+*.swo
+
+# patch
+*.orig
+*.rej
 
 # Maven
 target/
-timing.properties
-
-# Logs
-*.log
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
