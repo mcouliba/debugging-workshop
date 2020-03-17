@@ -1,0 +1,17 @@
+# Eclipse
+.project
+.classpath
+.settings/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea
+
+# Maven
+target/
+timing.properties
+
+# Logs
+*.log
