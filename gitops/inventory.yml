@@ -13,7 +13,7 @@ items:
       app.kubernetes.io/name: java
     name: inventory
   spec:
-    replicas: 0
+    replicas: 1
     selector:
       app: coolstore
       app.kubernetes.io/instance: inventory
