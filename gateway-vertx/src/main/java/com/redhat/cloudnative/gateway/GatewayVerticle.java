@@ -30,9 +30,12 @@ public class GatewayVerticle extends AbstractVerticle {
     @Override
     public void start() {
         Router router = Router.router(vertx);
+        // Enable TraceInterceptor handler
+        router.route()
+            .order(-1)
+            .handler(TracingInterceptor.create());
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
         router.get("/*").handler(StaticHandler.create("assets"));
-        // router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/health").handler(this::health);
         router.get("/api/products").handler(this::products);
 
@@ -74,7 +77,7 @@ public class GatewayVerticle extends AbstractVerticle {
 
     private void products(RoutingContext rc) {
         // Retrieve catalog
-        catalog
+        TracingInterceptor.propagate(catalog, rc)
             .get("/api/catalog")
             .expect(ResponsePredicate.SC_OK)
             .as(BodyCodec.jsonArray())
@@ -91,7 +94,7 @@ public class GatewayVerticle extends AbstractVerticle {
                     // For each item from the catalog, invoke the inventory service
                     // and create a JsonArray containing all the results
                     return Observable.fromIterable(products)
-                        .flatMapSingle(this::getAvailabilityFromInventory)
+                        .flatMapSingle(product -> this.getAvailabilityFromInventory(rc, product))
                         .collect(JsonArray::new, JsonArray::add);
                 }
             )
@@ -101,9 +104,9 @@ public class GatewayVerticle extends AbstractVerticle {
             );
     }
 
-    private Single<JsonObject> getAvailabilityFromInventory(JsonObject product) {
+    private Single<JsonObject> getAvailabilityFromInventory(RoutingContext rc, JsonObject product) {
         // Retrieve the inventory for a given product
-        return inventory
+        return TracingInterceptor.propagate(inventory, rc)
             .get("/api/inventory/" + product.getString("itemId"))
             .as(BodyCodec.jsonObject())
             .rxSend()
