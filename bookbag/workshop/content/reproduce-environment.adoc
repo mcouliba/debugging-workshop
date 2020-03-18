@@ -1,3 +1,4 @@
+:markup-in-source: verbatim,attributes,quotes
 :USER_ID: %USER_ID%
 :OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
 :OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
@@ -69,7 +70,7 @@ image::images/argocd-synced-application.png[Argo CD - Synced Application, 800]
 
 In the window called **'>_ workshop-tools terminal'**, `*execute the following commands*`:
 
-[source,shell]
+[source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
 $ cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
@@ -91,7 +92,7 @@ spec:
 EOF
 ----
 
-[source,shell]
+[source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
 $ cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
@@ -119,12 +120,12 @@ spec:
 EOF
 ----
 
-[source,shell]
+[source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
 $ oc set env deployment/web \
     COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.apps.cluster-nantes-2f2e.nantes-2f2e.example.opentlc.com/staging-project{USER_ID} \
-    -n staging-project1{USER_ID}
+    -n staging-project{USER_ID}
 ----
 
 '''

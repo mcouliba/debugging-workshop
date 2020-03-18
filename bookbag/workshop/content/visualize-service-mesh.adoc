@@ -91,7 +91,7 @@ Indeed, it is currently configured with an InMemory Database (H2), which is used
 
 image::images/openshift-catalog-configmap-h2.png[OpenShift - Catalog ConfigMap H2, 900]
 
-`*Edit this ConfigMap *` with the following content:
+`*Update this ConfigMap*` with the following content:
 
 [source,shell]
 .>_ workshop-tools terminal
