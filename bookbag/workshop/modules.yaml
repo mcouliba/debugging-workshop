@@ -1,0 +1,16 @@
+modules:
+    developer-workspace:
+        name: ”You Are Not Alone”
+        exit_sign: “The past is relevant only as data.”
+    reproduce-environment:
+        name: “The past is relevant only as data.”
+        exit_sign: “Bird Box”… Not Today! 
+    visualize-service-mesh:
+        name: “Bird Box”… Not Today!
+        exit_sign: “Dream Within a Dream“
+    perform-trace-analysis:
+        name: “Dream Within a Dream“
+        exit_sign: “Mr Robot”, Please Help Me!
+    live-debugging:
+        name: “Mr Robot”, Please Help Me!
+        exit_sign: Finish Workshop
