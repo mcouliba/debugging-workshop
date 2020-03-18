@@ -1,0 +1,342 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      app.openshift.io/connects-to: inventory-mariadb
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: java
+    name: inventory
+  spec:
+    replicas: 1
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+    revisionHistoryLimit: 2
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        labels:
+          app: coolstore
+          app.kubernetes.io/instance: inventory
+      spec:
+        containers:
+        - args:
+          - -c
+          - until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting
+            for Istio Sidecar...\"; sleep 1; done; sleep 10; ./application -Dquarkus.http.host=0.0.0.0
+          command:
+          - /bin/bash
+          env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: quay.io/mcouliba/inventory-quarkus:3.1_debugging
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/health/live
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: inventory
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9779
+            name: prometheus
+            protocol: TCP
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/health/ready
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          securityContext:
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /work/config
+            name: volume-app-config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: inventory
+          name: volume-app-config
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    name: inventory-mariadb
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory-mariadb
+      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: mariadb
+  spec:
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    triggers:
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - mariadb
+          from:
+            kind: ImageStreamTag
+            namespace: openshift
+            name: 'mariadb:10.2'
+          lastTriggeredImage: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8
+      - type: ConfigChange
+    replicas: 1
+    revisionHistoryLimit: 10
+    test: false
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: inventory-mariadb
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: coolstore
+          app.kubernetes.io/instance: inventory-mariadb
+      spec:
+        volumes:
+          - name: inventory-mariadb-data
+            emptyDir: {}
+        containers:
+          - resources:
+              limits:
+                memory: 512Mi
+            readinessProbe:
+              exec:
+                command:
+                  - /bin/sh
+                  - '-i'
+                  - '-c'
+                  - >-
+                    MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER
+                    -D $MYSQL_DATABASE -e 'SELECT 1'
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+            terminationMessagePath: /dev/termination-log
+            name: mariadb
+            livenessProbe:
+              tcpSocket:
+                port: 3306
+              initialDelaySeconds: 30
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+            env:
+              - name: MYSQL_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-user
+              - name: MYSQL_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-password
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-root-password
+              - name: MYSQL_DATABASE
+                valueFrom:
+                  secretKeyRef:
+                    name: inventory-mariadb
+                    key: database-name
+            ports:
+              - containerPort: 3306
+                protocol: TCP
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - name: inventory-mariadb-data
+                mountPath: /var/lib/mysql/data
+            terminationMessagePolicy: File
+            image: >-
+              image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        dnsPolicy: ClusterFirst
+        securityContext: {}
+        schedulerName: default-scheduler
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      prometheus.io/port: "9779"
+      prometheus.io/scrape: "true"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    name: inventory
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+    sessionAffinity: None
+    type: ClusterIP
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: inventory-mariadb
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory-mariadb
+      app.kubernetes.io/part-of: coolstore
+    annotations:
+      template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
+  spec:
+    ports:
+      - name: mariadb
+        protocol: TCP
+        port: 3306
+        targetPort: 3306
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: inventory-mariadb
+    type: ClusterIP
+    sessionAffinity: None
+- apiVersion: v1
+  data:
+    application.properties: |
+      quarkus.datasource.url=jdbc:mariadb://inventory-mariadb:3306/inventorydb
+      quarkus.datasource.username=inventory
+      quarkus.datasource.password=inventory
+  kind: ConfigMap
+  metadata:
+    name: inventory
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: inventory-mariadb
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    annotations:
+      template.openshift.io/expose-database_name: '{.data[''database-name'']}'
+      template.openshift.io/expose-password: '{.data[''database-password'']}'
+      template.openshift.io/expose-root_password: '{.data[''database-root-password'']}'
+      template.openshift.io/expose-username: '{.data[''database-user'']}'
+  data:
+    database-name: aW52ZW50b3J5ZGI=
+    database-password: aW52ZW50b3J5
+    database-root-password: aW52ZW50b3J5
+    database-user: aW52ZW50b3J5
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_INVENTORY_HOST: aW52ZW50b3J5
+    COMPONENT_INVENTORY_PORT: ODA4MA==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8080"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    name: inventory-8080
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_INVENTORY_HOST: aW52ZW50b3J5
+    COMPONENT_INVENTORY_PORT: ODQ0Mw==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8443"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    name: inventory-8443
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_INVENTORY_HOST: aW52ZW50b3J5
+    COMPONENT_INVENTORY_PORT: ODc3OA==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8778"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: inventory
+      app.kubernetes.io/part-of: coolstore
+    name: inventory-8778
+  type: Opaque

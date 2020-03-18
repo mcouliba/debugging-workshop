@@ -1,0 +1,341 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      app.openshift.io/connects-to: catalog-postgresql
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: java
+    name: catalog
+  spec:
+    replicas: 1
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 3600
+        updatePeriodSeconds: 1
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        labels:
+          app: coolstore
+          app.kubernetes.io/instance: catalog
+      spec:
+        containers:
+        - args:
+          - -c
+          - until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting
+            for Istio Sidecar...\"; sleep 1; done; sleep 10; java -jar /ROOT.jar
+          command:
+          - /bin/bash
+          env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          image: quay.io/mcouliba/catalog-spring-boot:3.1_debugging
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/actuator/health
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: catalog
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          - containerPort: 9779
+            name: prometheus
+            protocol: TCP
+          - containerPort: 8778
+            name: jolokia
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - -f
+              - http://127.0.0.1:8080/actuator/health
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          securityContext:
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.alpha.openshift.io/wait-for-ready: "true"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog-postgresql
+      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/name: postgresql
+    name: catalog-postgresql
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: catalog-postgresql
+    strategy:
+      activeDeadlineSeconds: 21600
+      recreateParams:
+        timeoutSeconds: 600
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        labels:
+          app: coolstore
+          app.kubernetes.io/instance: catalog-postgresql
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: catalog-postgresql
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: catalog-postgresql
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: catalog-postgresql
+          image: >-	
+            image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:e25e66d7356e0ab8f7d443a8f4344e87a323c11d1957030a2f6b93f23bbe6d0b
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+              - --live
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: catalog-postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: catalog-postgresql-data
+          emptyDir: {}
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:9.6
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      prometheus.io/port: "9779"
+      prometheus.io/scrape: "true"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog-postgresql
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-postgresql
+  spec:
+    ports:
+    - name: postgresql
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: coolstore
+      app.kubernetes.io/instance: catalog-postgresql
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  data:
+    application.properties: |
+      spring.application.name=catalog
+      server.port=8080
+
+      spring.datasource.url=jdbc:h2:mem:fruits;DB_CLOSE_ON_EXIT=FALSE
+      spring.datasource.username=sa
+      spring.datasource.password=
+      spring.datasource.driver-class-name=org.h2.Driver
+  kind: ConfigMap
+  metadata:
+    name: catalog
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+- apiVersion: v1
+  data:
+    database-name: Y2F0YWxvZ2Ri
+    database-password: Y2F0YWxvZw==
+    database-user: Y2F0YWxvZw==
+  kind: Secret
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-database_name: '{.data[''database-name'']}'
+      template.openshift.io/expose-password: '{.data[''database-password'']}'
+      template.openshift.io/expose-username: '{.data[''database-user'']}'
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-postgresql
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_CATALOG_HOST: Y2F0YWxvZw==
+    COMPONENT_CATALOG_PORT: ODA4MA==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8080"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-8080
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_CATALOG_HOST: Y2F0YWxvZw==
+    COMPONENT_CATALOG_PORT: ODQ0Mw==
+  kind: Secret
+  metadata:
+    annotations:
+      component-port: "8443"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-8443
+  type: Opaque
+- apiVersion: v1
+  data:
+    COMPONENT_CATALOG_HOST: Y2F0YWxvZw==
+    COMPONENT_CATALOG_PORT: ODc3OA==
+  kind: Secret
+  metadata:
+    annotations:
+      app.kubernetes.io/component-source-type: binary
+      component-port: "8778"
+    labels:
+      app: coolstore
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/part-of: coolstore
+    name: catalog-8778
+  type: Opaque
