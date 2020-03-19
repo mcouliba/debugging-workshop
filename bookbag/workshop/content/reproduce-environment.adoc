@@ -41,6 +41,9 @@ image::images/developer-gitops-button.png[Developer GitOps - Button, 300]
 
 Then `*login as user{USER_ID}/{OPENSHIFT_PASSWORD}*`, `*click on 'Allow selected permissions'*`
 
+[window=_blank, align="center"]
+image::images/argocd-loginpage.png[Argo CD - Login Page, 500]
+
 Once completed, you will be redirected to the following page.
 
 image::images/argocd-home.png[Argo CD - Home Page, 500]
@@ -69,6 +72,10 @@ image::images/argocd-synced-application.png[Argo CD - Synced Application, 800]
 === Controlling Ingress Traffic
 
 In the window called **'>_ workshop-tools terminal'**, `*execute the following commands*`:
+
+To open **'>_ workshop-tools terminal'**  inside **CodeReady Workspaces**.
+[window=_blank, align="center"]
+image::images/Open-TerminalCRW.png[How to open _New Terminal through CRW, 800]
 
 [source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
