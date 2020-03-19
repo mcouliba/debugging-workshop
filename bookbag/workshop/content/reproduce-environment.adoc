@@ -5,6 +5,7 @@
 :GITOPS_URL: %GITOPS_URL%
 
 _15 MINUTES PRACTICE_
+In this serie if their body dies, their stack can be stored indefinitely. Their stacks can be downloaded into new bodies, or "sleeves", after death. Using **Argo CD**, GitOps continuous delivery tool for Kubernetes you will be able to restart the Stacks of the **Mysterious Apps**
 
 .Altered Carbon (Netflix)
 [caption=" "]
