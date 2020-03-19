@@ -34,6 +34,8 @@ Piouf!! Lots of things to do in a short period of time...
 
 *"No Worry Be Happy"*, Red Hat OpenShift Container Platform, Inc is here to help!!
 
+You have *NOTHING* to install on your own LAPTOP. Just use your *Chrome Browser* during this lab. 
+
 '''
 
 === What is CodeReady Workspaces?
@@ -98,6 +100,7 @@ Once completed, you will have a fully functional Browser-based IDE within the so
 image::images/che-workspace.png[Che - Workspace, 800]
 
 '''
+To go further with *RedHat Codeready Workspaces*  follow this http://https://developers.redhat.com/products/codeready-workspaces/overview[link]
 
 === What is OpenShift Connect?
 
