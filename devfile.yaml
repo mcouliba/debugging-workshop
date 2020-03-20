@@ -46,20 +46,20 @@ commands:
     actions:
       - workdir: /projects/workshop/labs/gitops
         type: exec
-        command: ./gitops_exporter.sh my-project${CHE_WORKSPACE_NAMESPACE#user} cn-project${CHE_WORKSPACE_NAMESPACE#user}
+        command: ./gitops_exporter.sh my-project${CHE_WORKSPACE_NAMESPACE#user} staging-project${CHE_WORKSPACE_NAMESPACE#user}
         component: workshop-tools
   - name: 'Gateway - Generate Traffic'
     actions:
       - workdir: /projects/workshop/labs/scripts
         type: exec
-        command: ./runGatewayService.sh cn-project${CHE_WORKSPACE_NAMESPACE#user}
+        command: ./runGatewayService.sh staging-project${CHE_WORKSPACE_NAMESPACE#user}
         component: workshop-tools
   - name: 'Pipeline - Start Mine'
     actions:
       - type: exec
         command: >-
           echo "------ START ------" &&
-          tkn pipeline start my-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace cn-project${CHE_WORKSPACE_NAMESPACE#user} &&
+          tkn pipeline start my-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace staging-project${CHE_WORKSPACE_NAMESPACE#user} &&
           echo "------  END  ------"
         component: workshop-tools
   - name: 'Pipeline - Start Full'
@@ -67,7 +67,7 @@ commands:
       - type: exec
         command: >-
           echo "------ START ------" &&
-          tkn pipeline start application-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace cn-project${CHE_WORKSPACE_NAMESPACE#user} &&
+          tkn pipeline start application-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace staging-project${CHE_WORKSPACE_NAMESPACE#user} &&
           echo "------  END  ------"
         component: workshop-tools
   - name: 'Service Mesh - Deploy'

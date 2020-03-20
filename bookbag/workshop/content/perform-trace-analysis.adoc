@@ -7,7 +7,9 @@ markup-in-source: verbatim,attributes,quotes
 
 _20 MINUTES PRACTICE_
 
-As Cobb and Arthur in *Inception*, let's perform a *"Trace Within a Trace" Strategy* called **Distributed Tracing** using Red Hat OpenShift Container Platform to infiltrate the application traces and extract valuable information to solve the issues
+As Cobb and Arthur in *Inception*, let's perform a *"Trace Within a Trace" Strategy* called **Distributed Tracing** 
+using Red Hat OpenShift Container Platform to infiltrate the application traces and extract valuable information to solve 
+the issues.
 
 image::images/inception.jpg[Inception, 500]
 

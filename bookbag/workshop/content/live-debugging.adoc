@@ -3,9 +3,12 @@ markup-in-source: verbatim,attributes,quotes
 :OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
 :OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
 :KIBANA_URL: %KIBANA_URL%
+
 _20 MINUTES PRACTICE_
 
-After checking logs and traces we need the ability to do live debugging of my application, it's an essential piece in the development process. It's time to enter to the system running. How to penetrate to the secured kubernetes system, I need the POWER of Elliot Alderson. 
+After checking logs and traces we need the ability to do live debugging of my application, 
+it's an essential piece in the development process. It's time to enter to the system running. 
+How to penetrate to the secured kubernetes system, I need the POWER of Elliot Alderson. 
 
 image::images/mrrobot.png[MrRobot, 500]
 
