@@ -48,7 +48,9 @@ Once connected you will see a page like this one:
 
 image::images/jaeger-ui.png[Jaeger - UI, 800]
 
-Now you have to go to your Application CoolStore HomePage to generate some loads and traffic. Just refresh it multiple times.
+Now through Kiali you will be able to access to the **Tracing** part. 
+
+Now you have to go to your Application **CoolStore** HomePage to generate some loads and traffic. Just refresh it multiple times.
 
 === What are you hidding, Mr/Mrs *Application*?
 
