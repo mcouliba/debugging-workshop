@@ -47,7 +47,7 @@ Kiali provides an interactive graph view of your namespace in real time, being a
 [window=_blank, align="center"]
 image::images/developer-observability-button.png[Developer Observability - Button, 300]
 
-Then, `*log in with OpenShift as user{{USER_ID}}/{{OPENSHIFT_PASSWORD}}'*`
+Then, `*log in with OpenShift as user{USER_ID}/{OPENSHIFT_PASSWORD}'*`
 
 From the **'Graph' view**, `*enter the following configuration*`:
 
@@ -89,7 +89,7 @@ Let's fix it!!
 
 === Check the Catalog Service Configuration
 
-In the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^], from the **Developer view**,
+In the {OPENSHIFT_CONSOLE_URL}[OpenShift Web Console^], from the **Developer view**,
 `*click on 'Advanced (1) > Search (2)', select 'ConfigMap'(3) resource and click on 'catalog'*`
 
 image::images/catalog-service-config.png[OpenShift - Catalog service config, 900]
