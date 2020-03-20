@@ -42,6 +42,14 @@ https://www.kiali.io[Kiali^] includes https://www.jaegertracing.io[Jaeger Tracin
 Because of security reasons, you need first to access the main {JAEGER_URL}[Jaeger Console^] 
 and log in as user{USER_ID}/{OPENSHIFT_PASSWORD}
 
+image::images/jaeger-loginpage.png[Jaeger - Login Page, 800]
+
+Once connected you will see a page like this one:
+
+image::images/jaeger-ui.png[Jaeger - UI, 800]
+
+Now you have to go to your Application CoolStore HomePage to generate some loads and traffic. Just refresh it multiple times.
+
 === What are you hidding, Mr/Mrs *Application*?
 
 From the {KIALI_URL}[Kiali Console^], on the **'Graph' view**, 
