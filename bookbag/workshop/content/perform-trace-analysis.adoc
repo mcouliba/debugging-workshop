@@ -139,6 +139,7 @@ Do not forget to import the missing packages.
 ====
 
 Now let's test the new version of the source code.
+To do it we will use a new Project framework called Istio Workspace.
 
 '''
 
@@ -148,16 +149,34 @@ Now let's test the new version of the source code.
 --
 image::images/istio-workspaces-logo.png[Istio Workspace, 400]
 
-TODO
+https://github.com/Maistra/istio-workspace[Istio Workspace^] : 
+Safely develop and test on any kubernetes cluster without distracting others.
+
+* Do you have confidence that your Test and Stage environments reflect reality? 
+* Are they easy to keep up-to-date with production? 
+* Can you reproduce production failure in these environments or locally? 
+* What about that error you keep seeing on production that’s never occurring on Test or Stage?
+
+It’s been always hard to test new functionality before it reaches production. Even more so, with the shift from a **monolith** to **microservices** and increasing scale. 
+Can you still spin up the entire solution on your laptop to debug and test a suspicious piece of code? Testing on production is no longer a meme. It’s reality and a necessity.
+
+This project works with Istio and Kubernetes or Openshift to give you confidence that your changes won’t blow up production cluster and your users won’t even notice a glitch.
 
 TODO
 
-TODO
+
 --
 
 '''
 
 === Route the traffic on your local workspace
+
+[source,shell,subs="{markup-in-source}"]
+.>_ workshop-tools terminal
+
+$ ike develop --deployment catalog --run "mvn spring-boot:run"
+
+image::images/new-catalog-service.png[New Catalog Deployed, 700]
 
 TODO
 
