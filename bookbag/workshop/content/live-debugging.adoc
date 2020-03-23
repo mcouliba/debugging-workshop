@@ -26,8 +26,10 @@ image::images/Kibana-Logo-Color-H.png[Kibana, 400]
 OpenShift provides a logging solution based on ElasticSearch, Fluentd, and https://en.wikipedia.org/wiki/Kibana[Kibana^] :
 
 *  **Fluentd** which serves as both the collector and the normalizer, 
-*  **Elasticsearch** serves as the warehouse, and 
+*  **Elasticsearch** serves as the warehouse (aggregation and storage), and 
 *  **Kibana** is the visualizer (web UI). **Kibana** is a Node.js application. It works very well with Elasticsearch and is tightly coupled to it. 
+
+image::images/logging-stack.png[Logging Stack, 700]
 
 The logging system can provide two views: 
 
@@ -43,7 +45,7 @@ Logs management plays a vital role when we encounter an error in the application
 
 === Investigate The Bug
 
-CoolStore application seems to have a bug that causes the inventory status for one of the products not to be displayed in the web interface
+**CoolStore** application seems to have a bug that causes the inventory status for one of the products not to be displayed in the web interface
 
 image::images/debug-coolstore-bug.png[Inventory Status Bug, 800]
 
