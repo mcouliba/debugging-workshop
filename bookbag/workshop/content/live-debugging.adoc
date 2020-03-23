@@ -1,4 +1,4 @@
-markup-in-source: verbatim,attributes,quotes
+:markup-in-source: verbatim,attributes,quotes
 :USER_ID: %USER_ID%
 :OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
 :OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
@@ -9,6 +9,7 @@ After checking logs and traces we need the ability to do live debugging of my ap
 
 image::images/mrrobot.png[MrRobot, 500]
 
+.MrRobot
 https://www.usanetwork.com/mrrobot/photos/eps22init1asec[Source: https://www.usanetwork.com/mrrobot/photos/eps22init1asec^]
 
 '''
