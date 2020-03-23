@@ -12,6 +12,7 @@ How to penetrate to the secured kubernetes system, I need the POWER of Elliot Al
 
 image::images/mrrobot.png[MrRobot, 500]
 
+.MrRobot
 https://www.usanetwork.com/mrrobot/photos/eps22init1asec[Source: https://www.usanetwork.com/mrrobot/photos/eps22init1asec^]
 
 '''

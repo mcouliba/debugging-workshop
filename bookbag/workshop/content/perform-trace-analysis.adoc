@@ -4,6 +4,8 @@
 :OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
 :JAEGER_URL: %JAEGER_URL%
 :KIALI_URL: %KIALI_URL%
+:APPS_HOSTNAME_SUFFIX: %APPS_HOSTNAME_SUFFIX%
+:COOLSTORE_HOMEPAGE: web-staging-project{USER_ID}.{APPS_HOSTNAME_SUFFIX}
 
 _20 MINUTES PRACTICE_
 
@@ -54,7 +56,11 @@ image::images/jaeger-ui.png[Jaeger - UI, 800]
 
 Now through Kiali you will be able to access to the **Tracing** part. 
 
-Now you have to go to your Application **CoolStore** HomePage to generate some loads and traffic. Just refresh it multiple times.
+Now you have to go to your Application {COOLSTORE_HOMEPAGE}[Coolstore^] HomePage to generate some loads and traffic. Just **reload** it multiple times and you can go to Kiali Console
+
+image::images/coolstore-homepage.png[Coolstore Home page, 800]
+[.text-center]
+{COOLSTORE_HOMEPAGE}[Coolstore Application Homepage^]
 
 === What are you hidding, Mr/Mrs *Application*?
 
@@ -84,6 +90,9 @@ image::images/jaeger-trace-delay-detail-view.png[Jaeger - Trace Delay Detail Vie
 Interesting... The major part of a call is consuming by the **Catalog Service**.
 So let's have a look on its code. 
 `*Go through the 'catalog-spring-boot' project and find the following piece of code*`:
+
+image::images/catalog-controller.png[Catalog Controller - Java code, 700]
+
 
 [source,java]
 .CatalogController.java
@@ -126,6 +135,7 @@ As you are an expert of Java 8, you are about to create a masterpiece by both si
         return StreamSupport.stream(products, false).collect(Collectors.toList());
     }
 ----
+image::images/catalog-controller-updated.png[Catalog Controller Updated- Java code, 700]
 
 [IMPORTANT]
 ====

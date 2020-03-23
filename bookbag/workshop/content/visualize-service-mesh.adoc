@@ -49,7 +49,7 @@ Kiali provides an interactive graph view of your namespace in real time, being a
 [window=_blank, align="center"]
 image::images/developer-observability-button.png[Developer Observability - Button, 300]
 
-Then, `*log in with OpenShift as user{USER_ID}/{OPENSHIFT_PASSWORD}'*`
+Then, `*log in with user{USER_ID}/{OPENSHIFT_PASSWORD}'*`
 
 From the **'Graph' view**, `*enter the following configuration*`:
 
@@ -60,7 +60,7 @@ From the **'Graph' view**, `*enter the following configuration*`:
 |Value
 
 |Namespace 
-|staging-project{{USER_ID}}
+|staging-project{USER_ID}
 
 |Graph
 |Workload graph
