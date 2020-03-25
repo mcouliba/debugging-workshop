@@ -18,10 +18,6 @@ image::images/inception.jpg[Inception, 500]
 [.text-center]
 https://wallpapercave.com/wp/ZDpGHyX.jpg[Source: https://wallpapercave.com/wp/ZDpGHyX.jpg^]
 
-
-As Cobb and Arthur in *Inception*, let's perform a *"Trace Within a Trace" Strategy* called **Distributed Tracing** using Red Hat OpenShift Container Platform to infiltrate the application traces and extract valuable information to solve the issues
-
-
 '''
 
 === What is Jaeger?
@@ -54,9 +50,9 @@ Once connected you will see a page like this one:
 
 image::images/jaeger-ui.png[Jaeger - UI, 800]
 
-Now through Kiali you will be able to access to the **Tracing** part. 
+Now through Kiali you will be able to access to the **Tracing** part.
 
-Now you have to go to your Application {COOLSTORE_HOMEPAGE}[Coolstore^] HomePage to generate some loads and traffic. Just **reload** it multiple times and you can go to Kiali Console
+You have to go to your Application {COOLSTORE_HOMEPAGE}[Coolstore^] HomePage to generate some loads and traffic. Just **reload** it multiple times and you can go to Kiali Console
 
 image::images/coolstore-homepage.png[Coolstore Home page, 800]
 [.text-center]
