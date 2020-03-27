@@ -1,4 +1,5 @@
 :markup-in-source: verbatim,attributes,quotes
+:APPS_HOSTNAME_SUFFIX: %APPS_HOSTNAME_SUFFIX%
 :USER_ID: %USER_ID%
 :OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
 :OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
@@ -139,7 +140,7 @@ EOF
 .>_ workshop-tools terminal
 ----
 $ oc set env deployment/web \
-    COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.apps.cluster-nantes-2f2e.nantes-2f2e.example.opentlc.com/staging-project{USER_ID} \
+    COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.{APPS_HOSTNAME_SUFFIX}/staging-project{USER_ID} \
     -n staging-project{USER_ID}
 ----
 
