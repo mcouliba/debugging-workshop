@@ -10,7 +10,7 @@ _15 MINUTES PRACTICE_
 image::images/castaway.jpg[Cast Away, 500]
 
 
-After a long and frustrated morning spending hours to solve an issue that a colleague, passing by chance with his/her 
+After a long and frustrating morning spending hours to solve an issue that a colleague, passing by chance with his/her 
 cup of coffee, fixed in literally 5 seconds, you are finally ready to start your normal working day when ...
 
 Your manager suddenly comes out of his/her office and walks to you with the very known face that saying *"You are in trouble!"*.
@@ -46,7 +46,7 @@ image::images/codereadyworkspaces-logo.png[CodeReady Workspaces, 400]
 
 https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] is a Kubernetes-native IDE and developer collaboration platform.
 
-As an open-source project, the core goals of https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  are to:
+As an open-source project, the core goals of https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] are to:
 
 * **Accelerate project and developer onboarding:** As a zero-install development environment that runs in your browser, https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  makes it easy for anyone to join your team and contribute to a project.
 * **Remove inconsistency between developer environments:** No more: “But it works on my machine.” Your code works exactly the same way in everyone’s environment.
@@ -83,24 +83,24 @@ Providing a https://github.com/mcouliba/debugging-workshop/blob/master/devfile.y
 to this file.
 ====
 
-`*Click on the below button called 'Developer Workspace'*`
+*Click on the below button called* `*'Developer Workspace'*`
 
 [link={CHE_URL}/dashboard/#/ide/user{USER_ID}/wksp-debugging]
 [window=_blank, align="center"]
 image::images/developer-workspace-button.png[Developer Workspace - Button, 300]
 
-Then `*login as user{USER_ID}/{OPENSHIFT_PASSWORD}*`, `*click on 'Allow selected permissions'*` and let's the magic happens...
+Then *login as* `*user{USER_ID}/{OPENSHIFT_PASSWORD}*`, *click on* `*'Allow selected permissions'*` and let's the magic happens...
 
 image::images/che-login.png[Che - Login, 500]
 
 image::images/che-openshift-authorize-access.png[Che - OpenShift OAuth Authorize Access, 600]
 
-Once completed, you will have a fully functional Browser-based IDE within the source code already imported.
+Once completed, you will have a fully functional Browser-based IDE with the source code already imported.
 
 image::images/che-workspace.png[Che - Workspace, 800]
 
 '''
-To go further with *RedHat Codeready Workspaces*  follow this http://https://developers.redhat.com/products/codeready-workspaces/overview[link]
+To go further with *RedHat Codeready Workspaces*  follow http://https://developers.redhat.com/products/codeready-workspaces/overview[this link]
 
 === What is OpenShift Connect?
 
@@ -110,7 +110,7 @@ To go further with *RedHat Codeready Workspaces*  follow this http://https://dev
 image::images/openshiftconnect-logo.png[OpenShift Connector logo, 150]
 
 https://marketplace.visualstudio.com/items?itemName=redhat.vscode-openshift-connector[OpenShift Connector^]
-is a Visual Studio (VS) Code extension for interacting with Red Hat OpenShift cluster with more improved features for a seamless developer experience.
+is a Visual Studio (VS) Code extension for interacting with Red Hat OpenShift cluster with more improved features for seamless developer experience.
 
 Developers can now focus on higher-level abstractions like their application and components and can drill down deeper to get to the OpenShift and 
 Kubernetes resources that make up their application directly from CodeReady Workspaces.

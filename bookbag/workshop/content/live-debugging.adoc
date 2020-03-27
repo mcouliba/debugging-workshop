@@ -7,8 +7,7 @@
 _20 MINUTES PRACTICE_
 
 After checking logs and traces we need the ability to do live debugging of my application, 
-it's an essential piece in the development process. It's time to enter to the system running. 
-How to penetrate to the secured kubernetes system, I need the POWER of Elliot Alderson. 
+it's an essential piece in the development process. It's time to enter the running system. To penetrate the secured Kubernetes cluster, I need the POWER of Elliot Alderson.
 
 image::images/mrrobot.png[MrRobot, 500]
 
@@ -38,14 +37,14 @@ The logging system can provide two views:
 
 https://docs.openshift.com/container-platform/3.11/install_config/aggregate_logging.html#aggregate-logging-kibana[Additionnal information^]
 
-Logs management plays a vital role when we encounter an error in the application. If we do not manage the logs, it will be difficult in any application, especially in microservices architecture to find the error and fix it. For our application with lots of microservices we have to identify interesting traces and Kibana is offering an nice User Interface with search field to explore and to analyze logs files easily. Whenever we get some error in the application(s), we can get the error details and analyze them in a simple way.
+Log management plays a vital role when we encounter an error in the application. If we do not manage the logs, it will be difficult in any application, especially in microservices architecture, to find the problem and fix it. For our application with lots of microservices we have to identify interesting traces and Kibana is offering an nice User Interface with a search field to explore and to analyze logs files easily. Whenever we get some error in the application(s), we can get the error details and analyze them in a simple way.
 --
 
 '''
 
 === Investigate The Bug
 
-**CoolStore** application seems to have a bug that causes the inventory status for one of the products not to be displayed in the web interface
+**CoolStore** application seems to have a bug that causes the inventory status for one of the products not to be displayed in the web interface.
 
 image::images/debug-coolstore-bug.png[Inventory Status Bug, 800]
 
@@ -58,8 +57,8 @@ image::images/kibana-console.png[Kibana - Console, 600]
 
 After you log in, enter the following configuration:
 
- * Add the 2 fields: **'kubernetes.pod_name'**, **'message'**
- * Search: **'message:(error)'**
+ * Add the 2 fields: `**kubernetes.pod_name**`, `**message**`
+ * Search: `**message:(error)**`
 
 image::images/kibana-search.png[Kibana - Search, 200]
 
@@ -94,9 +93,9 @@ TODO
 
 === Enable Remote Debugging for Inventory Service Application
 
-Now, you need to switch your application in Remote Debugging Mode. The Java image on OpenShift has built-in support for 
+Now, you need to switch your application to Remote Debugging Mode. The Java image on OpenShift has built-in support for 
 https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html-single/red_hat_java_s2i_for_openshift/index#example_workflow_remote_debugging_a_java_application_running_on_java_s2i_for_openshift_image[Remote Debugging^] 
-and it can be enabled by setting the **JAVA_DEBUG=true** environment variables on the deployment config for the pod that you want to remotely debug.
+and it can be enabled by setting the `**JAVA_DEBUG=true**` environment variable in the deployment config for the pod that you want to remotely debug.
 
 In your {CHE_URL}[Workspace^], open a new Terminal with OpenShift tools by `*clicking 
 on the 'My Workspace' white box in the right menu, then 'Plugins' -> 'vscode-openshift-connector' -> '>_ New terminal'*`:
@@ -109,7 +108,7 @@ In the window called **'>_ vscode-openshift-connector terminal'**, `*execute the
 .>_ vscode-openshift-connector terminal
 ----
 $ oc set env dc/inventory JAVA_DEBUG=true
-$ oc get pods -lapp=inventory,deploymentconfig=inventory -w
+$ oc get pods -l app=inventory,deploymentconfig=inventory -w
 NAME                           READY     STATUS         RESTARTS   AGE
 inventory-1-j4c2g              2/2       Terminating    0          33m
 inventory-2-l22lz              2/2       Running        2          1m
@@ -205,7 +204,7 @@ image::images/che-runtask.png[Che - RunTask, 500]
 image::images/che-buildinventory.png[Che - Build Inventory Service, 500]
 
 When the container is rebuilt and deployed, point your browser at the Web route and verify 
-that the inventory status is visible for all products. The suspect product should show 
+that the inventory status is visible for all products. The suspicious product should show
 the inventory status as **Not in Stock**.
 
 image::images/debug-coolstore-bug-fixed.png[Inventory Status Bug Fixed, 800]
