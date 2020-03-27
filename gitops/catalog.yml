@@ -41,6 +41,7 @@ items:
           sidecar.istio.io/inject: "true"
         labels:
           app: coolstore
+          version: v1
           app.kubernetes.io/instance: catalog
       spec:
         containers:
