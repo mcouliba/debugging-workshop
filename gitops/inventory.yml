@@ -8,7 +8,7 @@ items:
       app.openshift.io/connects-to: inventory-mariadb
     labels:
       app: coolstore
-      version: 1
+      version: v1
       app.kubernetes.io/instance: inventory
       app.kubernetes.io/part-of: coolstore
       app.kubernetes.io/name: java
