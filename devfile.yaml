@@ -14,43 +14,43 @@ components:
 commands:
   - name: 'Inventory - Compile (Dev Mode)'
     actions:
-      - workdir: /projects/workshop/labs/inventory-quarkus
+      - workdir: /projects/workshop/inventory-quarkus
         type: exec
         command: 'mvn compile quarkus:dev'
         component: workshop-tools
   - name: 'Inventory - Build'
     actions:
-      - workdir: /projects/workshop/labs/inventory-quarkus
+      - workdir: /projects/workshop/inventory-quarkus
         type: exec
         command: mvn clean package -DskipTests
         component: workshop-tools
   - name: 'Catalog - Build'
     actions:
-      - workdir: /projects/workshop/labs/catalog-spring-boot
+      - workdir: /projects/workshop/catalog-spring-boot
         type: exec
         command: mvn clean package -DskipTests
         component: workshop-tools
   - name: 'Catalog - Run'
     actions:
-      - workdir: /projects/workshop/labs/catalog-spring-boot
+      - workdir: /projects/workshop/catalog-spring-boot
         type: exec
         command: mvn spring-boot:run
         component: workshop-tools
   - name: 'Gateway - Build'
     actions:
-      - workdir: /projects/workshop/labs/gateway-vertx
+      - workdir: /projects/workshop/gateway-vertx
         type: exec
         command: 'mvn clean package -DskipTests'
         component: workshop-tools
   - name: 'GitOps - Export'
     actions:
-      - workdir: /projects/workshop/labs/gitops
+      - workdir: /projects/workshop/gitops
         type: exec
         command: ./gitops_exporter.sh my-project${CHE_WORKSPACE_NAMESPACE#user} staging-project${CHE_WORKSPACE_NAMESPACE#user}
         component: workshop-tools
   - name: 'Gateway - Generate Traffic'
     actions:
-      - workdir: /projects/workshop/labs/scripts
+      - workdir: /projects/workshop/scripts
         type: exec
         command: ./runGatewayService.sh staging-project${CHE_WORKSPACE_NAMESPACE#user}
         component: workshop-tools
