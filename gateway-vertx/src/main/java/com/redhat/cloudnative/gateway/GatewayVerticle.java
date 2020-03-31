@@ -34,7 +34,7 @@ public class GatewayVerticle extends AbstractVerticle {
     @Override
     public void start() {
         Router router = Router.router(vertx);
-        router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
+        router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET).allowedHeader("Ike-Session-Id"));
         router.get("/*").handler(StaticHandler.create("assets"));
         router.get("/health").handler(this::health);
         router.get("/api/products").handler(HeadersHandler::capture).handler(this::products);
