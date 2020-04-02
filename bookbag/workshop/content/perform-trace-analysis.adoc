@@ -58,7 +58,7 @@ image::images/coolstore-homepage.png[Coolstore Home page, 800]
 [.text-center]
 {COOLSTORE_HOMEPAGE}[Coolstore Application Homepage^]
 
-=== What are you hidding, Mr/Mrs *Application*?
+=== What are you hiding, Mr/Mrs *Application*?
 
 From the {KIALI_URL}[Kiali Console^], on the **'Graph' view**, 
 `*right-click on 'gateway Virtual Service' > 'Show Traces'*`
@@ -116,10 +116,43 @@ public List<Product> getAll() {
 ----
 
 And yes, this burns your eyes, right?! Basically nobody could understand what the developer attempted to achieve but we do not have the time for that.
-This piece of code is a part of the **getAll()** method which returns the list of all products from the database. 
-As you are an expert of Java 8, you are about to create a masterpiece by both simplifying the code and increasing performance. 
+This piece of code is a part of the `**getAll()**` method which returns the list of all products from the database.
+As you are a Java expert, you are about to create a masterpiece by both simplifying the code and increasing performance.
 
-`*Replace the content of the 'getAll()' method*` as following:
+Lets fix it! To do it we will use a new tool called https://github.com/Maistra/istio-workspace[Istio Workspace].
+
+'''
+
+=== What is Istio Workspace?
+
+[sidebar]
+--
+
+https://github.com/Maistra/istio-workspace[Istio Workspace^] is a tool that let you safely develop and test on any kubernetes cluster without distracting others.
+
+The key value proposition is to allow you run service you are working on locally but interact with the other services running in the cluster.
+
+This way you can use your favourite tools and avoid making your machine sweating from trying to run "the whole cloud" where your application is deployed.
+
+Additionally you can develop and test your changes without interfering with other users. Only you would be able to see your changes before they hit the production.
+
+* Do you have confidence that your Test and Stage environments reflect reality? 
+* Are they easy to keep up-to-date with production? 
+* Can you reproduce production failure in these environments or locally? 
+* What about that error you keep seeing on production that’s never occurring on Test or Stage?
+
+It has been always hard to test new functionality before it reaches production. Even more so, with the shift from a **monolith** to **microservices** and increasing scale.
+It is practically impossible to spin up the entire solution on your laptop to debug and test a suspicious piece of code. Testing on production is no longer a meme. It’s reality and a necessity.
+
+This project works with Istio and Kubernetes or Openshift to give you confidence that your changes won’t blow up production cluster and your users won’t even notice a glitch.
+
+--
+
+'''
+
+=== Route the traffic on your local workspace
+
+First we have to fix the problem. `*Replace the content of the 'getAll()' method*` as following:
 
 [source,java]
 .CatalogController.java
@@ -127,6 +160,7 @@ As you are an expert of Java 8, you are about to create a masterpiece by both si
     @ResponseBody
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Product> getAll() {
+        System.out.println(">>>> getAll, but faster");
         Spliterator<Product> products = repository.findAll().spliterator();
         return StreamSupport.stream(products, false).collect(Collectors.toList());
     }
@@ -138,55 +172,47 @@ image::images/catalog-controller-updated.png[Catalog Controller Updated- Java co
 Do not forget to import the missing packages.
 ====
 
-Now let's test the new version of the source code.
-To do it we will use a new Project framework called Istio Workspace.
-
-'''
-
-=== What is Istio Workspace?
-
-[sidebar]
---
-image::images/istio-workspaces-logo.png[Istio Workspace, 400]
-
-https://github.com/Maistra/istio-workspace[Istio Workspace^] : 
-Safely develop and test on any kubernetes cluster without distracting others.
-
-* Do you have confidence that your Test and Stage environments reflect reality? 
-* Are they easy to keep up-to-date with production? 
-* Can you reproduce production failure in these environments or locally? 
-* What about that error you keep seeing on production that’s never occurring on Test or Stage?
-
-It’s been always hard to test new functionality before it reaches production. Even more so, with the shift from a **monolith** to **microservices** and increasing scale. 
-Can you still spin up the entire solution on your laptop to debug and test a suspicious piece of code? Testing on production is no longer a meme. It’s reality and a necessity.
-
-This project works with Istio and Kubernetes or Openshift to give you confidence that your changes won’t blow up production cluster and your users won’t even notice a glitch.
-
-TODO
-
-
---
-
-'''
-
-=== Route the traffic on your local workspace
+With those changes in place we can now test it. But does it mean we have to go through the whole **build -> deploy -> test** cycle? That can take a couple of minutes.
+Luckily, with Istio Workspace we can now start service with our changes locally, but in a way like it would be running as part of the application.
 
 [source,shell,subs="{markup-in-source}"]
+
 .>_ workshop-tools terminal
 
-$ ike develop --deployment catalog --run "mvn spring-boot:run"
+$ ike develop --deployment catalog-v1 --run "mvn spring-boot:run" --port 9000:8080 --route header:ike-session-id=lab3
+
+image::images/ike-develop-catalog.png[New Catalog Starting, 700]
+
+This command will deploy new version of the service which you can access by using special routing header `ike-session-id=lab3`.
 
 image::images/new-catalog-service.png[New Catalog Deployed, 700]
 
-TODO
-
 '''
 
-=== Test the new traffic
+=== Test the new version
 
-TODO
+As we have our improved service already up and running, it's time to test the new version.
+You can now access application through web interface by adding `/?route=lab3` query parameter to the URL of deployed app:
 
-Just wonderful! You reduce the response time by a factor of 5!! You should be proud!!
+link:{COOLSTORE_HOMEPAGE}/#!/?route=lab3[]
+
+image::images/ike-develop-catalog-url.png[Accessing new version of Catalog, 700]
+
+This will result in directing your traffic to the new version of the Catalog service, but will keep all the other users still relying on the last deployed version.
+Sadly, they will be still affected by the performance regression we just fixed.
+
+NOTE: `route=lab3` is not automatically added by Istio Workspace.
+This parameter, like any other should be handled (and appropriately propagated) by the application itself.
+
+We can see directly in Che console, that our service has been accessed, as we are printing a test message every single time `CatalogController` is accessed now.
+
+image::images/ike-develop-catalog-hit.png[Accessing new version of Catalog Service in Che, 700]
+
+
+// The problem with this statement is that with telepresence and app running from within Che the performance gain is not
+// really visible. This will be in effect only when deployed as a regular service.
+// I wonder maybe we can suggest adding some logging to really see that the service was hit?
+Just wonderful! You reduced the response time by a factor of 5! You should be proud!
 
 '''
 
