@@ -32,7 +32,7 @@ Now you have to:
 
 Piouf!! Lots of things to do in a short period of time...
 
-*"No Worry Be Happy"*, Red Hat OpenShift Container Platform, Inc is here to help!!
+*"Don't Worry, Be Happy"*, Red Hat OpenShift Container Platform, Inc is here to help!!
 
 You have *NOTHING* to install on your own LAPTOP. Just use your *Chrome Browser* during this lab. 
 
@@ -83,13 +83,13 @@ Providing a https://github.com/mcouliba/debugging-workshop/blob/master/devfile.y
 to this file.
 ====
 
-*Click on the below button called* `*'Developer Workspace'*`
+Click on the below button called `**Developer Workspace**`
 
 [link={CHE_URL}/dashboard/#/ide/user{USER_ID}/wksp-debugging]
 [window=_blank, align="center"]
 image::images/developer-workspace-button.png[Developer Workspace - Button, 300]
 
-Then *login as* `*user{USER_ID}/{OPENSHIFT_PASSWORD}*`, *click on* `*'Allow selected permissions'*` and let's the magic happens...
+Then login as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`, click on `**Allow selected permissions**` and let's the magic happens...
 
 image::images/che-login.png[Che - Login, 500]
 
@@ -138,15 +138,15 @@ the running OpenShift cluster.
 
 === Connect Your Workspace to Your OpenShift User
 
-First, in your {CHE_URL}[Workspace^], `*open the 'OpenShift' View*` by clicking on the OpenShift icon of the left hand side.
+First, in your link:{CHE_URL}[Workspace^], open the `**OpenShift View**` by clicking on the OpenShift icon of the left hand side.
 
 image::images/che-openshift-view.png[Che - OpenShift View, 300]
 
-Then, `*click the 'Log in to cluster' icon and confirm you want to connect to a different cluster*`
+Then, click the `**Log in to cluster**` icon and confirm you want to connect to a different cluster
 
 image::images/che-openshift-login-popup.png[Che - OpenShift Login Popup, 500]
 
-Finally, `*enter the following information*`:
+Finally, *enter the following information*:
 
 .OpenShift Log in
 [%header,cols=2*]
@@ -175,8 +175,8 @@ You should see 2 projects in the **OpenShift View** as following:
 
 image::images/che-openshift-logged.png[Che - OpenShift Logged, 300]
 
-* The **'staging-project{USER_ID}' project** will be used as a **Staging Environment**.
-* The **'workspacexxxxxxxx' project** contains your workspace.
+* The `**staging-project{USER_ID}**` **project** will be used as a **Staging Environment**.
+* The `**workspacexxxxxxxx**` **project** contains your workspace.
 
 '''
 
@@ -185,17 +185,17 @@ image::images/che-openshift-logged.png[Che - OpenShift Logged, 300]
 OpenShift ships with a web-based console that will allow users to
 perform various tasks via a browser.
 
-`*Click on the below button called 'Developer Console'*`
+Click on the below button called `**Developer Console**`
 
 [link={OPENSHIFT_CONSOLE_URL}]
 [window=_blank, align="center"]
 image::images/developer-console-button.png[Developer Workspace - Button, 300]
 
-`*Enter your username and password (user{USER_ID}/{OPENSHIFT_PASSWORD})*` and 
+Enter your username and password (`**user{USER_ID}/{OPENSHIFT_PASSWORD}**`) and
 then log in. After you have authenticated to the web console, you will be presented with a
 list of projects that your user has permission to work with. 
 
-`*Select the 'Developer View' then your 'staging-project{USER_ID}'*` to be taken to the project overview page
+Select the `**Developer View**` then your `**staging-project{USER_ID}**` to be taken to the project overview page
 which will list all of the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.

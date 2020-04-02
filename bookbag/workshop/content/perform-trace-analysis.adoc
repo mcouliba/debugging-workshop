@@ -41,8 +41,8 @@ https://www.kiali.io[Kiali^] includes https://www.jaegertracing.io[Jaeger Tracin
 
 === Connect to Jaeger First.
 
-Because of security reasons, you need first to access the main {JAEGER_URL}[Jaeger Console^] 
-and log in as user{USER_ID}/{OPENSHIFT_PASSWORD}
+Because of security reasons, you need first to access the main link:{JAEGER_URL}[Jaeger Console^]
+and log in as `user{USER_ID}/{OPENSHIFT_PASSWORD}`
 
 image::images/jaeger-loginpage.png[Jaeger - Login Page, 800]
 
@@ -52,7 +52,7 @@ image::images/jaeger-ui.png[Jaeger - UI, 800]
 
 Now through Kiali you will be able to access to the **Tracing** part.
 
-You have to go to your Application {COOLSTORE_HOMEPAGE}[Coolstore^] HomePage to generate some loads and traffic. Just **reload** it multiple times and you can go to Kiali Console
+You have to go to your Application link:{COOLSTORE_HOMEPAGE}[Coolstore^] HomePage to generate some loads and traffic. Just **reload** it multiple times and you can go to Kiali Console
 
 image::images/coolstore-homepage.png[Coolstore Home page, 800]
 [.text-center]
@@ -152,7 +152,7 @@ This project works with Istio and Kubernetes or Openshift to give you confidence
 
 === Route the traffic on your local workspace
 
-First we have to fix the problem. `*Replace the content of the 'getAll()' method*` as following:
+First we have to fix the problem. **Replace the content of the** `**getAll()**` **method** as following:
 
 [source,java]
 .CatalogController.java
@@ -172,7 +172,7 @@ image::images/catalog-controller-updated.png[Catalog Controller Updated- Java co
 Do not forget to import the missing packages.
 ====
 
-With those changes in place we can now test it. But does it mean we have to go through the whole **build -> deploy -> test** cycle? That can take a couple of minutes.
+With those changes in place we can now test it. But does it mean we have to go through the whole `**build -> deploy -> test**` cycle? That can take a couple of minutes.
 Luckily, with Istio Workspace we can now start service with our changes locally, but in a way like it would be running as part of the application.
 
 [source,shell,subs="{markup-in-source}"]
@@ -183,7 +183,7 @@ $ ike develop --deployment catalog-v1 --run "mvn spring-boot:run" --port 9000:80
 
 image::images/ike-develop-catalog.png[New Catalog Starting, 700]
 
-This command will deploy new version of the service which you can access by using special routing header `ike-session-id=lab3`.
+This command will deploy new version of the service which you can access by using special routing header `**ike-session-id=lab3**`.
 
 image::images/new-catalog-service.png[New Catalog Deployed, 700]
 
@@ -201,10 +201,10 @@ image::images/ike-develop-catalog-url.png[Accessing new version of Catalog, 700]
 This will result in directing your traffic to the new version of the Catalog service, but will keep all the other users still relying on the last deployed version.
 Sadly, they will be still affected by the performance regression we just fixed.
 
-NOTE: `route=lab3` is not automatically added by Istio Workspace.
+NOTE: `**route=lab3**` is not automatically added by Istio Workspace.
 This parameter, like any other should be handled (and appropriately propagated) by the application itself.
 
-We can see directly in Che console, that our service has been accessed, as we are printing a test message every single time `CatalogController` is accessed now.
+We can see directly in Che console, that our service has been accessed, as we are printing a test message every single time `**CatalogController**` is accessed now.
 
 image::images/ike-develop-catalog-hit.png[Accessing new version of Catalog Service in Che, 700]
 
