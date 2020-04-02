@@ -23,7 +23,7 @@ import io.vertx.reactivex.ext.web.handler.StaticHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.redhat.cloudnative.gateway.HeadersHandler.populateHeaders;
+import static com.redhat.cloudnative.gateway.HeadersPopulator.populateHeaders;
 
 public class GatewayVerticle extends AbstractVerticle {
     private static final Logger LOG = LoggerFactory.getLogger(GatewayVerticle.class);
@@ -37,7 +37,7 @@ public class GatewayVerticle extends AbstractVerticle {
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET).allowedHeader("Ike-Session-Id"));
         router.get("/*").handler(StaticHandler.create("assets"));
         router.get("/health").handler(this::health);
-        router.get("/api/products").handler(HeadersHandler::capture).handler(this::products);
+        router.get("/api/products").handler(this::products);
 
         ConfigRetriever retriever = ConfigRetriever.create(vertx);
         retriever.getConfig(ar -> {
