@@ -97,12 +97,12 @@ Now, you need to switch your application to Remote Debugging Mode. The Java imag
 https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html-single/red_hat_java_s2i_for_openshift/index#example_workflow_remote_debugging_a_java_application_running_on_java_s2i_for_openshift_image[Remote Debugging^] 
 and it can be enabled by setting the `**JAVA_DEBUG=true**` environment variable in the deployment config for the pod that you want to remotely debug.
 
-In your {CHE_URL}[Workspace^], open a new Terminal with OpenShift tools by `*clicking 
-on the 'My Workspace' white box in the right menu, then 'Plugins' -> 'vscode-openshift-connector' -> '>_ New terminal'*`:
+In your link:{CHE_URL}[Workspace^], open a new Terminal with OpenShift tools by clicking
+on the `**My Workspace**` white box in the right menu, then `**Plugins -> vscode-openshift-connector -> >_ New terminal**`:
 
 image::images/che-open-openshift-terminal.png[Che - Open OpenShift Terminal, 700]
 
-In the window called **'>_ vscode-openshift-connector terminal'**, `*execute the following commands*`:
+In the window called `**>_ vscode-openshift-connector terminl**`, execute the following commands:
 
 [source,shell]
 .>_ vscode-openshift-connector terminal
@@ -128,16 +128,16 @@ Once done, your Workspace should switch in **Debug Mode** as you can see the scr
 
 image::images/che-debugmode.png[Che - Debug Mode, 700]
 
-Go back the 'Explorer' view in the left menu and open the **com.redhat.cloudnative.inventory.InventoryResource** class 
-in the **inventory-thorntail** project.
+Go back the 'Explorer' view in the left menu and open the `**com.redhat.cloudnative.inventory.InventoryResource**` class
+in the `**inventory-quarkus**` project.
 
-`*Add a breakpoint*` by clicking on the editor sidebar on the line number of the first line of the **getAvailability()** 
+**Add a breakpoint** by clicking on the editor sidebar on the line number of the first line of the `**getAvailability()**`
 method
 
 image::images/che-breakpoint.png[Che - Breakpoint, 700]
 
-In the window called **'>_ vscode-openshift-connector terminal'**, `*invoke the Inventory Service API with the 
-suspect product id*` in order to pause the code execution at the defined breakpoint:
+In the window called `**>_ vscode-openshift-connector terminal**`, **invoke the Inventory Service API with the
+suspect product id** in order to pause the code execution at the defined breakpoint:
 
 [source,shell]
 .>_ vscode-openshift-connector terminal
@@ -146,18 +146,18 @@ $ oc rsh dc/inventory curl -v http://localhost:8080/api/inventory/444436
 ----
 
 The IDE will automatically switch back to the **Debug Panel** and notice that the code execution is paused at the 
-breakpoint on **InventoryResource** class.
+breakpoint on `**InventoryResource**` class.
 
 image::images/che-breakpointstop.png[Che - Breakpoint Stop, 900]
 
-`*Click on the 'Step Over' icon*` to execute one line and retrieve the inventory object for the 
+**Click on the** `**Step Over**` **icon** to execute one line and retrieve the inventory object for the
 given product id from the database.
 
 image::images/che-stepover.png[Che - Step Over, 900]
 
 Can you spot the bug now? 
 
-`*Look at the Variables window*` on the left hand side. The retrieved **inventory** object is **null**!
+**Look at the Variables window** on the left hand side. The retrieved **inventory** object is `**null**`!
 
 The non-existing product id is not a problem on its own because it simply could mean 
 this product is discontinued and removed from the Inventory database but it's not 
@@ -166,14 +166,14 @@ the code returns this **null** value instead of a sensible REST response. If the
 id does not exist, a proper JSON response stating a zero inventory should be 
 returned instead of **null**.
 
-`*Click on the _Resume_ icon*` to continue the code execution and then `*on the _Stop_ icon*` to 
+**Click on the** _Resume_ **icon** to continue the code execution and then `*on the _Stop_ icon*` to
 end the debug session.
 
 '''
 
 === Fix the Bug
 
-Under the **/projects/labs/inventory-thorntail** project, `*update the 'getAvailability()' method*` of the **InventoryResource** class 
+Under the `**/projects/inventory-quarkus**` project, **update the** `**getAvailability()**` **method** of the `**InventoryResource**` class
  as following:
 
 [source,java]
@@ -195,9 +195,9 @@ public Inventory getAvailability(@PathParam("itemId") String itemId) {
 }
 ----
 
-In your {CHE_URL}[Workspace^], via the command menu (Cmd+Shift+P ⌘⇧P on macOS or Ctrl+Shift+P ⌃⇧P on Windows and Linux),
+In your link:{CHE_URL}[Workspace^], via the command menu (Cmd+Shift+P ⌘⇧P on macOS or Ctrl+Shift+P ⌃⇧P on Windows and Linux),
 
-`*run 'Task: Run Task...' ->  'che: oc build inventory service'*`
+**run** `**Task: Run Task... ->  che: oc build inventory service**`
 
 image::images/che-runtask.png[Che - RunTask, 500]
 
