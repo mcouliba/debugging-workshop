@@ -3,6 +3,7 @@
 :OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
 :OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
 :KIBANA_URL: %KIBANA_URL%
+:COOLSTORE_HOMEPAGE: http://web-staging-project{USER_ID}.{APPS_HOSTNAME_SUFFIX}
 
 _20 MINUTES PRACTICE_
 
@@ -226,7 +227,6 @@ image::images/che-buildinventory.png[Che - Build Inventory Service, 500]
 When the container is rebuilt and deployed, point your browser at the Web route and verify 
 that the inventory status is visible for all products. The suspicious product should show
 the inventory status as **Not in Stock**.
-
 
 '''
 
