@@ -179,7 +179,7 @@ Luckily, with Istio Workspace we can now start service with our changes locally,
 
 .>_ workshop-tools terminal
 
-$ ike develop --deployment catalog-v1 --run "mvn spring-boot:run" --port 9000:8080 --route header:ike-session-id=lab3
+$ ike develop --deployment catalog-v1 --run 'mvn spring-boot:run' --port 9000:8080 --route header:ike-session-id=lab3
 
 image::images/ike-develop-catalog.png[New Catalog Starting, 700]
 
