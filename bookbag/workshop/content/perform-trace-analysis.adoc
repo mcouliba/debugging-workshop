@@ -208,10 +208,10 @@ We can see directly in Che console, that our service has been accessed, as we ar
 
 image::images/ike-develop-catalog-hit.png[Accessing new version of Catalog Service in Che, 700]
 
+Moreover we can see improvements in the response time as well:
 
-// The problem with this statement is that with telepresence and app running from within Che the performance gain is not
-// really visible. This will be in effect only when deployed as a regular service.
-// I wonder maybe we can suggest adding some logging to really see that the service was hit?
+image::images/ike-develop-catalog-hit-jaeger.png[New traces, 800]
+
 Just wonderful! You reduced the response time by a factor of 5! You should be proud!
 
 '''
