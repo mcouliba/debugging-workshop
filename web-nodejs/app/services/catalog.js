@@ -12,13 +12,18 @@ angular.module("app")
 	}
 
 	factory.getProducts = function() {
-		var deferred = $q.defer();
+        var deferred = $q.defer();
         if (products) {
             deferred.resolve(products);
         } else {
+            var route = $location.search().route
+
             $http({
                 method: 'GET',
-								url: baseUrl
+                url: baseUrl,
+                headers: {
+                    'Ike-Session-Id': route,
+                }
             }).then(function(resp) {
                 products = resp.data;
                 deferred.resolve(resp.data);

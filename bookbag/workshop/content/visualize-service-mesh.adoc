@@ -1,7 +1,15 @@
+:markup-in-source: verbatim,attributes,quotes
+:USER_ID: %USER_ID%
+:OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
+:OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
+:GITOPS_URL: %GITOPS_URL%
+:KIALI_URL: %KIALI_URL%
+
 _15 MINUTES PRACTICE_
 
-The **Mysterious Application** in your *Developer Workspaces* is now up and running. It is composed of several components, but so far, you have no clue about how the application is working.
-Going all over this application and debugging it completely blindfolded is time consuming and a crazy bid as Malorie does in *Bird Box*.
+The **Mysterious Application** in your *Developer Workspaces* is now up and running. It is composed of several components, 
+but so far, you have no clue about how the application is working. Going all over this application and debugging it completely 
+blindfolded is time consuming and a crazy bid as Malorie does in *Bird Box*.
 
 image::images/birdbox.png[BirdBox, 500]
 
@@ -35,15 +43,15 @@ from abstract Applications to Services and Workloads.
 
 Kiali provides an interactive graph view of your namespace in real time, being able to display the interactions at several levels (applications, versions, workloads), with contextual information and charts on the selected graph node or edge.
 
-`*Click on the below button called 'Developer Observability'*`
+**Click on the below button called** `**Developer Observability**`
 
 [link={KIALI_URL}]
 [window=_blank, align="center"]
 image::images/developer-observability-button.png[Developer Observability - Button, 300]
 
-Then, `*log in with OpenShift as user{{USER_ID}}/{{OPENSHIFT_PASSWORD}}'*`
+Then, **log in with** `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`
 
-From the **'Graph' view**, `*enter the following configuration*`:
+From the `**Graph view**`, enter the following configuration:
 
 .Graph Settings
 [%header,cols=2*]
@@ -52,7 +60,7 @@ From the **'Graph' view**, `*enter the following configuration*`:
 |Value
 
 |Namespace 
-|staging-project{{USER_ID}}
+|staging-project{USER_ID}
 
 |Graph
 |Workload graph
@@ -75,26 +83,34 @@ This page shows a graph with all the microservices, connected by the requests go
 Even if the application *seemed* working fine, you clearly that the *Catalog PostgreSQL Service* is not a part of the graph.
 That means this service is not called by the *Catalog Service* as it should be.
 
+image::images/kiali-postgresql-missing.png[Kiali-postgresql Graph,900]
+
 Let's fix it!!
 
 '''
 
 === Check the Catalog Service Configuration
 
-In the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^], from the **Developer view**,
-`*click on 'Advanced > Search', select 'ConfigMap' resource and click on 'catalog'*`
+In the link:{OPENSHIFT_CONSOLE_URL}[OpenShift Web Console^], from the **Developer view**,
+**click on** `**Advanced (1) -> Search (2)**`, **select** `**ConfigMap(3)**` resource and click on `**catalog**`.
+
+image::images/catalog-service-config.png[OpenShift - Catalog service config, 900]
 
 image::images/openshift-catalog-configmap.png[OpenShift - Catalog ConfigMap, 900]
 
 Have a look on the Data Section. *Catalog Service* is configured with the development parameters. 
 Indeed, it is currently configured with an InMemory Database (H2), which is used for development purposes only.
 
+image::images/select-configmap.png[OpenShift - Select ConfigMap , 900]
+
+image::images/edit-configmap.png[OpenShift - Edit ConfigMap , 900]
+
+
 image::images/openshift-catalog-configmap-h2.png[OpenShift - Catalog ConfigMap H2, 900]
 
 `*Update this ConfigMap*` with the following content:
 
 [source,shell]
-.>_ workshop-tools terminal
 ----
 data:
   application.properties: |
@@ -109,13 +125,15 @@ data:
     spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ----
 
+image::images/update-configmap.png[OpenShift - Update Configmap, 900]
+
 Now, you have to re-deploy the *Catalog Service* with the latest configuration.
-`*Go back to 'Topology', click on the 'DC catalog' bubble and select 'Start Rollout' action*`
+**Go back to `Topology`, click on the `DC catalog` bubble and select `Start Rollout` action**
 
 image::images/openshift-catalog-rollout.png[OpenShift - Catalog Rollout, 900]
 
 Once the application is up and running, `*refresh your browser opened on the Coolstore Application*`.
-Then, `*go back on the Kiali graph*` and visualize the change.
+Then, **go back on the Kiali graph** and visualize the change.
 
 image::images/kiali-graph-with-db.png[Kiali- Graph with DB,900]
 
@@ -123,6 +141,6 @@ image::images/kiali-graph-with-db.png[Kiali- Graph with DB,900]
 
 === CONGRATULATIONS!!!
 
-You survive and you put off the blindfold on your own. But it is not THE END...
+You survived and you put off the blindfold on your own. But it is not THE END...
 
 Now, let's go deeper!!

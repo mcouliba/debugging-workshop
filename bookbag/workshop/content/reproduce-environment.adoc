@@ -1,4 +1,5 @@
 :markup-in-source: verbatim,attributes,quotes
+:APPS_HOSTNAME_SUFFIX: %APPS_HOSTNAME_SUFFIX%
 :USER_ID: %USER_ID%
 :OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
 :OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
@@ -10,6 +11,12 @@ _15 MINUTES PRACTICE_
 [caption=" "]
 [window=_blank, align="center"]
 image::images/altered-carbon.jpg[Altered Carbon, 500]
+
+
+In this series if their body dies, their stack can be stored indefinitely. Their stacks can be downloaded into
+new bodies, or "sleeves", after death. Using **Argo CD**, GitOps continuous delivery tool for Kubernetes, you
+will be able to restart the Stacks of the **Mysterious Apps**
+
 
 '''
 
@@ -41,6 +48,9 @@ image::images/developer-gitops-button.png[Developer GitOps - Button, 300]
 
 Then `*login as user{USER_ID}/{OPENSHIFT_PASSWORD}*`, `*click on 'Allow selected permissions'*`
 
+[window=_blank, align="center"]
+image::images/argocd-login-page.png[Argo CD - Login Page, 500]
+
 Once completed, you will be redirected to the following page.
 
 image::images/argocd-home.png[Argo CD - Home Page, 500]
@@ -67,8 +77,14 @@ image::images/argocd-synced-application.png[Argo CD - Synced Application, 800]
 '''
 
 === Controlling Ingress Traffic
+The Application deployed is using **Istio** (_covered in the next lab_). To be able to access the application from outside of the cluster we have to expose a specific service reachable externally, this service is called **Istio Gateway**. A Gateway allows Istio features such as monitoring and route rules to be applied to traffic entering the cluster. 
+Below we will setup the Istio **Gateway** and we will configure a route (**VirtualService**) for traffic entering via the Gateway.
 
 In the window called **'>_ workshop-tools terminal'**, `*execute the following commands*`:
+
+To open **'>_ workshop-tools terminal'**  inside **CodeReady Workspaces**.
+[window=_blank, align="center"]
+image::images/Open-TerminalCRW.png[How to open _New Terminal through CRW, 800]
 
 [source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
@@ -124,24 +140,24 @@ EOF
 .>_ workshop-tools terminal
 ----
 $ oc set env deployment/web \
-    COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.apps.cluster-nantes-2f2e.nantes-2f2e.example.opentlc.com/staging-project{USER_ID} \
+    COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.{APPS_HOSTNAME_SUFFIX}/staging-project{USER_ID} \
     -n staging-project{USER_ID}
 ----
 
 '''
 === Testing the application
 
-In the {OPENSHIFT_CONSOLE_URL}[OpenShift Web Console^], from the **Developer view**,
-`*Select the 'staging-project{USER_ID}'*` to be taken to the project overview page.
+In the link:{OPENSHIFT_CONSOLE_URL}[OpenShift Web Console^], from the **Developer view**,
+select the `**staging-project{USER_ID}**` to be taken to the project overview page.
 
 [window=_blank, align="center"]
 image::images/openshift-app-deployed-by-argocd.png[OpenShift - Coolstore Project Deployed by Argo CD , 700]
 
 You can see that all resources of your application have been created by Argo CD. 
 
-Then, `*click on the 'Open URL' icon of the Web Service*`
+Then, **click on the** `**Open URL**` **icon of the Web Service**.
 
-Your browser will be redirect on **your Web Service running on OpenShift**.
+Your browser will be redirect to **your Web Service running on OpenShift**.
 You should be able to see the CoolStore application with all products and their inventory status.
 
 image::images/coolstore-application.png[CoolStore Shop,840]

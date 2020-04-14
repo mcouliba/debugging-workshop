@@ -1,9 +1,19 @@
+:markup-in-source: verbatim,attributes,quotes
+:USER_ID: %USER_ID%
+:OPENSHIFT_PASSWORD: %OPENSHIFT_PASSWORD%
+:OPENSHIFT_CONSOLE_URL: %OPENSHIFT_CONSOLE_URL%/topology/ns/staging-project{USER_ID}
+:KIBANA_URL: %KIBANA_URL%
+:APPS_HOSTNAME_SUFFIX: %APPS_HOSTNAME_SUFFIX%
+:COOLSTORE_HOMEPAGE: http://web-staging-project{USER_ID}.{APPS_HOSTNAME_SUFFIX}
+
 _20 MINUTES PRACTICE_
 
-After checking logs and traces we need the ability to do live debugging of my application, it's an essential piece in the development process. It's time to enter to the system running. How to penetrate to the secured kubernetes system, I need the POWER of Elliot Alderson. 
+After checking logs and traces we need the ability to do live debugging of my application,
+it's an essential piece in the development process. It's time to enter the running system. To penetrate the secured Kubernetes cluster, I need the POWER of Elliot Alderson.
 
 image::images/mrrobot.png[MrRobot, 500]
 
+.MrRobot
 https://www.usanetwork.com/mrrobot/photos/eps22init1asec[Source: https://www.usanetwork.com/mrrobot/photos/eps22init1asec^]
 
 '''
@@ -17,8 +27,10 @@ image::images/Kibana-Logo-Color-H.png[Kibana, 400]
 OpenShift provides a logging solution based on ElasticSearch, Fluentd, and https://en.wikipedia.org/wiki/Kibana[Kibana^] :
 
 *  **Fluentd** which serves as both the collector and the normalizer, 
-*  **Elasticsearch** serves as the warehouse, and 
+*  **Elasticsearch** serves as the warehouse (aggregation and storage), and 
 *  **Kibana** is the visualizer (web UI). **Kibana** is a Node.js application. It works very well with Elasticsearch and is tightly coupled to it. 
+
+image::images/logging-stack.png[Logging Stack, 700]
 
 The logging system can provide two views: 
 
@@ -27,28 +39,28 @@ The logging system can provide two views:
 
 https://docs.openshift.com/container-platform/3.11/install_config/aggregate_logging.html#aggregate-logging-kibana[Additionnal information^]
 
-Logs management plays a vital role when we encounter an error in the application. If we do not manage the logs, it will be difficult in any application, especially in microservices architecture to find the error and fix it. For our application with lots of microservices we have to identify interesting traces and Kibana is offering an nice User Interface with search field to explore and to analyze logs files easily. Whenever we get some error in the application(s), we can get the error details and analyze them in a simple way.
+Log management plays a vital role when we encounter an error in the application. If we do not manage the logs, it will be difficult in any application, especially in microservices architecture, to find the problem and fix it. For our application with lots of microservices we have to identify interesting traces and Kibana is offering an nice User Interface with a search field to explore and to analyze logs files easily. Whenever we get some error in the application(s), we can get the error details and analyze them in a simple way.
 --
 
 '''
 
 === Investigate The Bug
 
-CoolStore application seems to have a bug that causes the inventory status for one of the products not to be displayed in the web interface
+**CoolStore** application seems to have a bug that causes the inventory status for one of the products not to be displayed in the web interface.
 
 image::images/debug-coolstore-bug.png[Inventory Status Bug, 800]
 
 This is not an expected behavior!
 
 Let's start our investigation from the application logs!
-`*Log in to the {KIBANA_URL}[Kibana Console^] as {OPENSHIFT_USER}/{OPENSHIFT_PASSWORD}*`
+**Log in to the** link:{KIBANA_URL}[Kibana Console^] as `{OPENSHIFT_USER}/{OPENSHIFT_PASSWORD}`
 
 image::images/kibana-console.png[Kibana - Console, 600]
 
 After you log in, enter the following configuration:
 
- * Add the 2 fields: **'kubernetes.pod_name'**, **'message'**
- * Search: **'message:(error)'**
+ * Add the 2 fields: `**kubernetes.pod_name**`, `**message**`
+ * Search: `**message:(error)**`
 
 image::images/kibana-search.png[Kibana - Search, 200]
 
@@ -59,112 +71,121 @@ image::images/kibana-error-result.png[Kibana - Error Result, 600]
 Oh! Something seems to be wrong with the response the **Gateway Service** has received from the **Inventory Service** for the product id **'444436'**. 
 But there doesn't seem to be anything relevant to the **invalid response** error at the **Inventory Service** level! 
 
-`*Go back to 'Distributed Tracing' menu`* from {KIALI_URL}[Kiali Console^]. 
-`*Select one of the Distributed Trace then on Search field enter the product id '444436'*`. One span should be highlighted in *light yellow*.
+**Go back to** `Distributed Tracing` **menu** from link:{KIALI_URL}[Kiali Console^].
+**Select one of the** `Distributed Trace` **then on** `Search` **field enter the product id** `444436`.
+One span should be highlighted in *light yellow*.
 
 image::images/jaeger-trace-inventory.png[Jaeger - Trace Inventory , 600]
 
-**Expand the 'inventory.{COOLSTORE_PROJECT}' span** in order to get more detail.
+**Expand the** `inventory.{COOLSTORE_PROJECT}` **span** in order to get more detail.
 
 image::images/jaeger-trace-inventory-details.png[Jaeger - Trace Inventory , 800]
 
-No response came back from **Inventory Service** for the product id **'444436'** and that seems to be the reason the inventory status is not displayed 
+No response came back from `**Inventory Service**` for the product id `**444436**` and that seems to be the reason the inventory status is not displayed
 on the web interface.
 
-Let's debug the **Inventory Service** to get to the bottom of this!
+Let's debug the `**Inventory Service**` to get to the bottom of this!
 
 '''
 
-=== Route the traffic on your local workspace
+=== Debugging with CodeReady Workspaces and Istio Workspace
 
-TODO
 
-'''
+Similarly to previous lab, we will leverage **Istio Workspace** tool to start **Inventory Service**, connect to actual production cluster and debug the code.
 
-=== Enable Remote Debugging for Inventory Service Application
+First, we have to start Quarkus-based `Inventory Service` in the `dev` mode. This is achieved by `quarkus:dev` Maven goal.
+This will allow us to:
 
-Now, you need to switch your application in Remote Debugging Mode. The Java image on OpenShift has built-in support for 
-https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html-single/red_hat_java_s2i_for_openshift/index#example_workflow_remote_debugging_a_java_application_running_on_java_s2i_for_openshift_image[Remote Debugging^] 
-and it can be enabled by setting the **JAVA_DEBUG=true** environment variables on the deployment config for the pod that you want to remotely debug.
+. attach debugger to running service.
+. reload code without restarts.
 
-In your {CHE_URL}[Workspace^], open a new Terminal with OpenShift tools by `*clicking 
-on the 'My Workspace' white box in the right menu, then 'Plugins' -> 'vscode-openshift-connector' -> '>_ New terminal'*`:
+We will also set header to `lab4`, so we can reach our instance and debug it where all the other users will still rely on the production instance.
 
-image::images/che-open-openshift-terminal.png[Che - Open OpenShift Terminal, 700]
-
-In the window called **'>_ vscode-openshift-connector terminal'**, `*execute the following commands*`:
+IMPORTANT: Having debugger attached to the production instance will result in halting the whole system for every user. We definitely don't what this to happen. And that's why `Istio Workspace` was born.
 
 [source,shell]
 .>_ vscode-openshift-connector terminal
 ----
-$ oc set env dc/inventory JAVA_DEBUG=true
-$ oc get pods -lapp=inventory,deploymentconfig=inventory -w
-NAME                           READY     STATUS         RESTARTS   AGE
-inventory-1-j4c2g              2/2       Terminating    0          33m
-inventory-2-l22lz              2/2       Running        2          1m
-
-<Ctrl+C>
+$ ike develop -d inventory-v1 -p 8080 -r 'mvn compile quarkus:dev' --route header:ike-session-id=lab4
 ----
 
-The status should be **Running** and there should be **2/2** pods in the **Ready** column. 
+Next, we have to configure remote debugging session. By default, Quarkus starts remote debugger on port `5005`, so let's attach debugger to it.
 
-'''
+image::images/che-attach-debugger.png[Che - Attach Debugger, 700]
 
-=== Debugging with CodeReady Workspaces
+Alternatively you can simply paste JSON below to `.theia/launch.json`
 
-TODO
+[source,json]
+.launch.json
+----
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "type": "java",
+          "name": "Debug (Attach)",
+          "request": "attach",
+          "hostName": "localhost",
+          "port": 5005
+      }
+  ]
+}
+----
 
-Once done, your Workspace should switch in **Debug Mode** as you can see the screenshot below:
+Once done, your can start debugging from the **Debug Mode** as you can see the screenshot below:
 
 image::images/che-debugmode.png[Che - Debug Mode, 700]
 
-Go back the 'Explorer' view in the left menu and open the **com.redhat.cloudnative.inventory.InventoryResource** class 
-in the **inventory-thorntail** project.
+Go back the `**Explorer**` view in the left menu and open the `**com.redhat.cloudnative.inventory.InventoryResource**` class
+in the `**inventory-quarkus**` project.
 
-`*Add a breakpoint*` by clicking on the editor sidebar on the line number of the first line of the **getAvailability()** 
-method
+**Add a breakpoint** by clicking on the editor sidebar on the line number of the first line of the `**getAvailability()**`
+method.
 
 image::images/che-breakpoint.png[Che - Breakpoint, 700]
 
-In the window called **'>_ vscode-openshift-connector terminal'**, `*invoke the Inventory Service API with the 
-suspect product id*` in order to pause the code execution at the defined breakpoint:
+Additionally, we can narrow breakpoint capture by enabling a condition `itemId.equals("444436")`.
 
-[source,shell]
-.>_ vscode-openshift-connector terminal
-----
-$ oc rsh dc/inventory curl -v http://localhost:8080/api/inventory/444436
-----
+Right-click on the breakpoint and select `**Edit Breakpoint..**` option.
 
-The IDE will automatically switch back to the **Debug Panel** and notice that the code execution is paused at the 
-breakpoint on **InventoryResource** class.
+image::images/che-conditional-breakpoint.png[Che - Edit Breakpoint, 700]
+
+Then add expression mentioned above - `itemId.equals("444436")` and hit `ENTER`.
+
+image::images/che-conditional-breakpoint-condition.png[Che - Conditional Breakpoint, 700]
+
+We can now access Cool Store app with the new route link:{COOLSTORE_HOMEPAGE}/#!/?route=lab4[] to see if we can reach the breakpoint.
+
+The IDE will automatically switch back to the **Debug Panel** and notice that the code execution is paused at the
+breakpoint on `**InventoryResource**` class.
 
 image::images/che-breakpointstop.png[Che - Breakpoint Stop, 900]
 
-`*Click on the 'Step Over' icon*` to execute one line and retrieve the inventory object for the 
+**Click on the** `**Step Over**` **icon** to execute one line and retrieve the inventory object for the
 given product id from the database.
 
 image::images/che-stepover.png[Che - Step Over, 900]
 
 Can you spot the bug now? 
 
-`*Look at the Variables window*` on the left hand side. The retrieved **inventory** object is **null**!
+**Look at the Variables window** on the left hand side. The retrieved **inventory** object is `**null**`!
 
-The non-existing product id is not a problem on its own because it simply could mean 
-this product is discontinued and removed from the Inventory database but it's not 
-removed from the product catalog database yet. The bug is however caused because 
-the code returns this **null** value instead of a sensible REST response. If the product 
-id does not exist, a proper JSON response stating a zero inventory should be 
-returned instead of **null**.
+The non-existing product id is not a problem on its own. It simply could mean this product is discontinued and removed
+from the Inventory database but it's not removed from the product catalog database yet.
+The bug is however caused because the code returns this **null** value instead of a sensible REST response.
+If the product id does not exist, a proper JSON response stating a zero inventory should be  returned instead of **null**.
 
-`*Click on the _Resume_ icon*` to continue the code execution and then `*on the _Stop_ icon*` to 
+**Click on the** _Resume_ **icon** to continue the code execution and then **on the** _Stop_ **icon** to
 end the debug session.
+
+image::images/che-end.png[Che - End, 900]
 
 '''
 
 === Fix the Bug
 
-Under the **/projects/labs/inventory-thorntail** project, `*update the 'getAvailability()' method*` of the **InventoryResource** class 
- as following:
+Under the `**inventory-quarkus**` project, **update the** `**getAvailability()**` **method** of the `**InventoryResource**` class
+ as follows:
 
 [source,java]
 .InventoryResource.java
@@ -185,19 +206,28 @@ public Inventory getAvailability(@PathParam("itemId") String itemId) {
 }
 ----
 
-In your {CHE_URL}[Workspace^], via the command menu (Cmd+Shift+P ⌘⇧P on macOS or Ctrl+Shift+P ⌃⇧P on Windows and Linux),
+After changing this logic let's access link:{COOLSTORE_HOMEPAGE}/#!/?route=lab4[] to verify how it works now.
 
-`*run 'Task: Run Task...' ->  'che: oc build inventory service'*`
+image::images/debug-coolstore-bug-fixed.png[Inventory Status Bug Fixed, 800]
+
+If it looks ok we are ready to roll it out to production!
+
+You can now stop `ike` tool in the terminal by pressing Ctrl+C. This will result in undeploying our special instance which we just used for debugging purposes.
+
+
+=== Deploying on production
+
+In your link:{CHE_URL}[Workspace^], via the command menu (Cmd+Shift+P ⌘⇧P on macOS or Ctrl+Shift+P ⌃⇧P on Windows and Linux),
+
+**run** `**Task: Run Task... ->  che: oc build inventory service**`
 
 image::images/che-runtask.png[Che - RunTask, 500]
 
 image::images/che-buildinventory.png[Che - Build Inventory Service, 500]
 
 When the container is rebuilt and deployed, point your browser at the Web route and verify 
-that the inventory status is visible for all products. The suspect product should show 
+that the inventory status is visible for all products. The suspicious product should show
 the inventory status as **Not in Stock**.
-
-image::images/debug-coolstore-bug-fixed.png[Inventory Status Bug Fixed, 800]
 
 '''
 
