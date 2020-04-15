@@ -1,27 +1,20 @@
-# Debugging microservices applications on Red Hat OpenShift 
-[![Contribute](images/factory-contribute.svg)](http://codeready-workspaces.apps.cluster-5ed3.5ed3.events.opentlc.com/f?name=debugging-microservices&user=admin)
+# Pragmatic Approach to Debug Microservices Applications on Openshift
+## Red Hat Summit 2020 - April 28th and 29th
 
 ## Purpose
+Distributed microservices introduce new challenges like failure modes that are harder to anticipate and resolve. Deploying and managing microservices architecture is becoming easier with a container orchestration platform like Red Hat OpenShift, raising critical questions: 
+How do you debug a distributed system? 
+How do you ensure the good health of your application? 
+How do you increase your microservices’ “immunity” to issues?
 
-As microservices-based applications become more prevalent, both the number of
-and complexity of their interactions increases. Up until now much of the burden
-of managing these complex microservices interactions has been placed on the
-application developer, with different or non-existent support for microservice
-concepts depending on language and framework.
-
-Deploying and managing microservices architecture is becoming easier with a 
-container orchestration platform like Openshift. So now, critical questions
- is raising: How do you debug a distributed system and how do you ensure 
-the good health of your application? Debugging microservices architecture is hard. 
-The state of the application is spread through multiple microservices which makes 
-more complicated to get a global overview for debugging purposes.
 
 ## Background
 This hands-on workshop will introduce and help you to get familiar with the common 
-tracing/debugging techniques using Jaeger/OpenTracing, Istio, Kiali and Squash in 
+tracing/debugging techniques using Jaeger/OpenTracing, Istio, Kiali and Istio-workspaces in 
 a microservice context
 
 # Agenda
-* Kiali / Istio
-* Opentracing - Jaeger
-* Realtime Debugging with Squash
+* Deployment of "Mysterious Apps" apps using argoCD tool.
+* Kiali to visualize the service mesh topology, to provide visibility into features like circuit breakers, request rates and more. It offers insights about the mesh components at different levels, from abstract Applications to Services and Workloads.
+* Opentracing - Jaeger is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems
+* Realtime Debugging with Istio-workspaces
