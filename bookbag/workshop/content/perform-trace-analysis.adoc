@@ -59,7 +59,7 @@ image::images/coolstore-homepage.png[Coolstore Home page, 800]
 
 === What are you hiding, Mr/Mrs *Application*?
 
-From the {KIALI_URL}[Kiali Console^], on the **'Graph' view**, 
+From link:{KIALI_URL}[Kiali^], in the **'Graph' view**, 
 `*right-click on 'gateway Virtual Service' > 'Show Traces'*`
 
 image::images/kiali-show-traces.png[Kiali - Show Traces, 800]
@@ -174,13 +174,13 @@ Do not forget to import the missing packages.
 With those changes in place we can now test it. But does it mean we have to go through the whole `**build -> deploy -> test**` cycle? That can take a couple of minutes.
 Luckily, with Istio Workspace we can now start service with our changes locally, but in a way like it would be running as part of the application.
 
-[source,shell,subs="{markup-in-source}"]
+In your link:{CHE_URL}[Workspace^], `**click on 'Terminal' -> 'Run Task...'**`
 
-.>_ workshop-tools terminal
+image::images/che-runtask.png[Che - RunTask, 500]
 
-$ ike develop --deployment catalog-v1 --run 'mvn spring-boot:run' --port 9000:8080 --route header:ike-session-id=lab3
+Then `**select the command 'Catalog - Route Traffic to local'**`
 
-image::images/ike-develop-catalog.png[New Catalog Starting, 700]
+image::images/che-catalog-ike.png[Che - Catalog Route ike, 500]
 
 This command will deploy new version of the service which you can access by using special routing header `**ike-session-id=lab3**`.
 
@@ -191,19 +191,22 @@ image::images/new-catalog-service.png[New Catalog Deployed, 700]
 === Test the new version
 
 As we have our improved service already up and running, it's time to test the new version.
-You can now access application through web interface by adding `/?route=lab3` query parameter to the URL of deployed app:
+You can now access application through web interface by adding `**/?route=lab3**` query parameter 
+to the URL of deployed app:
 
 link:{COOLSTORE_HOMEPAGE}/#!/?route=lab3[]
-
-image::images/ike-develop-catalog-url.png[Accessing new version of Catalog, 700]
-
-This will result in directing your traffic to the new version of the Catalog service, but will keep all the other users still relying on the last deployed version.
-Sadly, they will be still affected by the performance regression we just fixed.
 
 NOTE: `**route=lab3**` is not automatically added by Istio Workspace.
 This parameter, like any other should be handled (and appropriately propagated) by the application itself.
 
-We can see directly in Che console, that our service has been accessed, as we are printing a test message every single time `**CatalogController**` is accessed now.
+From link:{KIALI_URL}[Kiali^], in the **'Graph' view**, `**check the new traffic**`
+
+image::images/kiali-catalog-routed.png[Catalog - Route Ike, 700]
+
+The traffic is directed to the new version of the Catalog service, but will keep all the other users still relying on the last deployed version.
+Sadly, they will be still affected by the performance regression we just fixed.
+
+We can also see directly in the console of your link:{CHE_URL}[Workspace^], that our service has been accessed, as we are printing a test message every single time `**CatalogController**` is accessed now.
 
 image::images/ike-develop-catalog-hit.png[Accessing new version of Catalog Service in Che, 700]
 

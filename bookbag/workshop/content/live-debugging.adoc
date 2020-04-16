@@ -11,10 +11,9 @@ _20 MINUTES PRACTICE_
 After checking logs and traces we need the ability to do live debugging of my application,
 it's an essential piece in the development process. It's time to enter the running system. To penetrate the secured Kubernetes cluster, I need the POWER of Elliot Alderson.
 
+.Mr. Robot. Sam Esmail (	NBCUniversal Television Distribution)
+[caption=" "]
 image::images/mrrobot.png[MrRobot, 500]
-
-.MrRobot
-https://www.usanetwork.com/mrrobot/photos/eps22init1asec[Source: https://www.usanetwork.com/mrrobot/photos/eps22init1asec^]
 
 '''
 
@@ -103,11 +102,13 @@ We will also set header to `lab4`, so we can reach our instance and debug it whe
 
 IMPORTANT: Having debugger attached to the production instance will result in halting the whole system for every user. We definitely don't what this to happen. And that's why `Istio Workspace` was born.
 
-[source,shell]
-.>_ vscode-openshift-connector terminal
-----
-$ ike develop -d inventory-v1 -p 8080 -r 'mvn compile quarkus:dev' --route header:ike-session-id=lab4
-----
+In your link:{CHE_URL}[Workspace^], `**click on 'Terminal' -> 'Run Task...'**`
+
+image::images/che-runtask.png[Che - RunTask, 500]
+
+Then `**select the command 'Inventory - Route Traffic to local'**`
+
+image::images/che-inventory-ike.png[Che - Inventory Route ike, 500]
 
 Next, we have to configure remote debugging session. By default, Quarkus starts remote debugger on port `5005`, so let's attach debugger to it.
 
