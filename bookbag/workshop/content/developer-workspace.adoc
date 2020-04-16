@@ -87,13 +87,11 @@ Click on the below button called `**Developer Workspace**`
 
 [link={CHE_URL}/dashboard/#/ide/user{USER_ID}/wksp-debugging]
 [window=_blank, align="center"]
-image::images/developer-workspace-button.png[Developer Workspace - Button, 300]
+image::images/developer-workspace-button.svg[Developer Workspace - Button, 300]
 
-Then login as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`, click on `**Allow selected permissions**` and let's the magic happens...
+Then login as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`, let's the magic happens...
 
 image::images/che-login.png[Che - Login, 500]
-
-image::images/che-openshift-authorize-access.png[Che - OpenShift OAuth Authorize Access, 600]
 
 Once completed, you will have a fully functional Browser-based IDE with the source code already imported.
 
@@ -171,12 +169,11 @@ Finally, *enter the following information*:
 
 |===
 
-You should see 2 projects in the **OpenShift View** as following:
+You should see one project in the **OpenShift View** as following:
 
 image::images/che-openshift-logged.png[Che - OpenShift Logged, 300]
 
 * The `**staging-project{USER_ID}**` **project** will be used as a **Staging Environment**.
-* The `**workspacexxxxxxxx**` **project** contains your workspace.
 
 '''
 
