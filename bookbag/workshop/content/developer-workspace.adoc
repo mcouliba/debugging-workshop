@@ -169,11 +169,9 @@ Finally, *enter the following information*:
 
 |===
 
-You should see one project in the **OpenShift View** as following:
+You should see one project in the **OpenShift View**  - `**staging-project{USER_ID}**` **project**  which will be used as a **Staging Environment**.
 
 image::images/che-openshift-logged.png[Che - OpenShift Logged, 300]
-
-* The `**staging-project{USER_ID}**` **project** will be used as a **Staging Environment**.
 
 '''
 

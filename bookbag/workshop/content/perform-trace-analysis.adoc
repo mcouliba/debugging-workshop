@@ -5,7 +5,7 @@
 :JAEGER_URL: %JAEGER_URL%
 :KIALI_URL: %KIALI_URL%
 :APPS_HOSTNAME_SUFFIX: %APPS_HOSTNAME_SUFFIX%
-:COOLSTORE_HOMEPAGE: web-staging-project{USER_ID}.{APPS_HOSTNAME_SUFFIX}
+:COOLSTORE_HOMEPAGE: http://web-staging-project{USER_ID}.{APPS_HOSTNAME_SUFFIX}
 
 _20 MINUTES PRACTICE_
 
@@ -178,7 +178,7 @@ Luckily, with Istio Workspace we can now start service with our changes locally,
 
 .>_ workshop-tools terminal
 
-$ ike develop --deployment catalog-v1 --run "mvn spring-boot:run" --port 9000:8080 --route header:ike-session-id=lab3
+$ ike develop --deployment catalog-v1 --run 'mvn spring-boot:run' --port 9000:8080 --route header:ike-session-id=lab3
 
 image::images/ike-develop-catalog.png[New Catalog Starting, 700]
 
@@ -207,10 +207,10 @@ We can see directly in Che console, that our service has been accessed, as we ar
 
 image::images/ike-develop-catalog-hit.png[Accessing new version of Catalog Service in Che, 700]
 
+Moreover we can see improvements in the response time as well:
 
-// The problem with this statement is that with telepresence and app running from within Che the performance gain is not
-// really visible. This will be in effect only when deployed as a regular service.
-// I wonder maybe we can suggest adding some logging to really see that the service was hit?
+image::images/ike-develop-catalog-hit-jaeger.png[New traces, 800]
+
 Just wonderful! You reduced the response time by a factor of 5! You should be proud!
 
 '''
