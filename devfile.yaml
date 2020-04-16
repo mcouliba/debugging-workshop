@@ -12,74 +12,21 @@ components:
     type: chePlugin
     alias: workshop-tools
 commands:
-  - name: 'Inventory - Compile (Dev Mode)'
-    actions:
-      - workdir: /projects/workshop/inventory-quarkus
-        type: exec
-        command: 'mvn compile quarkus:dev'
-        component: workshop-tools
-  - name: 'Inventory - Build'
-    actions:
-      - workdir: /projects/workshop/inventory-quarkus
-        type: exec
-        command: mvn clean package -DskipTests
-        component: workshop-tools
-  - name: 'Catalog - Build'
+  - name: 'Catalog - Route Traffic to Local'
     actions:
       - workdir: /projects/workshop/catalog-spring-boot
         type: exec
-        command: mvn clean package -DskipTests
-        component: workshop-tools
-  - name: 'Catalog - Run'
-    actions:
-      - workdir: /projects/workshop/catalog-spring-boot
-        type: exec
-        command: mvn spring-boot:run
-        component: workshop-tools
-  - name: 'Gateway - Build'
-    actions:
-      - workdir: /projects/workshop/gateway-vertx
-        type: exec
-        command: 'mvn clean package -DskipTests'
-        component: workshop-tools
-  - name: 'GitOps - Export'
-    actions:
-      - workdir: /projects/workshop/gitops
-        type: exec
-        command: ./gitops_exporter.sh my-project${CHE_WORKSPACE_NAMESPACE#user} staging-project${CHE_WORKSPACE_NAMESPACE#user}
-        component: workshop-tools
-  - name: 'Gateway - Generate Traffic'
-    actions:
-      - workdir: /projects/workshop/scripts
-        type: exec
-        command: ./runGatewayService.sh staging-project${CHE_WORKSPACE_NAMESPACE#user}
-        component: workshop-tools
-  - name: 'Pipeline - Start Mine'
-    actions:
-      - type: exec
         command: >-
-          echo "------ START ------" &&
-          tkn pipeline start my-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace staging-project${CHE_WORKSPACE_NAMESPACE#user} &&
-          echo "------  END  ------"
+          echo "------ START ------";
+          ike develop --deployment catalog-v1 --run 'mvn spring-boot:run' --port 9000:8080 --route header:ike-session-id=lab3;
+          echo "------ END ------";
         component: workshop-tools
-  - name: 'Pipeline - Start Full'
+  - name: 'Inventory - Route Traffic to Local'
     actions:
-      - type: exec
+      - workdir: /projects/workshop/inventory-quarkus
+        type: exec
         command: >-
-          echo "------ START ------" &&
-          tkn pipeline start application-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace staging-project${CHE_WORKSPACE_NAMESPACE#user} &&
-          echo "------  END  ------"
+          echo "------ START ------";
+          ike develop -d inventory-v1 -p 8080 -r 'mvn compile quarkus:dev' --route header:ike-session-id=lab4;
+          echo "------ END ------";
         component: workshop-tools
-  - name: 'Service Mesh - Deploy'
-    actions:
-      - type: exec
-        command: >-
-          oc patch dc/inventory-coolstore --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}' &&
-          oc patch dc/inventory-coolstore --patch '{"spec": {"template": {"spec": {"containers": [{"name": "inventory-coolstore", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}' &&
-          oc rollout latest dc/inventory-coolstore &&
-          oc rollout pause dc/gateway-coolstore &&
-          oc patch dc/gateway-coolstore --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}' &&
-          oc patch dc/gateway-coolstore --patch '{"spec": {"template": {"spec": {"containers": [{"name": "gateway-coolstore", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}' &&
-          oc rollout resume dc/gateway-coolstore
-        component: workshop-tools
-  
