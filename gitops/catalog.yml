@@ -209,15 +209,6 @@ items:
           emptyDir: {}
     test: false
     triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - postgresql
-        from:
-          kind: ImageStreamTag
-          name: postgresql:9.6
-          namespace: openshift
-      type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
   kind: Service
