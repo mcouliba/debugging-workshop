@@ -163,7 +163,7 @@ items:
               secretKeyRef:
                 key: database-name
                 name: catalog-postgresql
-          image: openshift/postgresql:9.6
+          image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:9.6
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -208,6 +208,17 @@ items:
         - name: catalog-postgresql-data
           emptyDir: {}
     test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:9.6
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
 - apiVersion: v1
   kind: Service
   metadata:
