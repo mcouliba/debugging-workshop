@@ -52,7 +52,7 @@ image::images/debug-coolstore-bug.png[Inventory Status Bug, 800]
 This is not an expected behavior!
 
 Let's start our investigation from the application logs!
-**Log in to the** link:{KIBANA_URL}[Kibana Console^] as `{OPENSHIFT_USER}/{OPENSHIFT_PASSWORD}`
+**Log in to the** link:{KIBANA_URL}[Kibana Console^] as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`
 
 image::images/kibana-console.png[Kibana - Console, 600]
 
