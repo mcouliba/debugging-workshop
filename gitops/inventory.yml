@@ -136,7 +136,7 @@ items:
     triggers:
       - type: ImageChange
         imageChangeParams:
-          automatic: true
+          automatic: false
           containerNames:
             - mariadb
           from:
