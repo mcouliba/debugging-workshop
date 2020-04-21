@@ -156,13 +156,13 @@ First we have to fix the problem. **Replace the content of the** `**getAll()**` 
 [source,java]
 .CatalogController.java
 ----
-    @ResponseBody
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Product> getAll() {
-        System.out.println(">>>> getAll, but faster");
-        Spliterator<Product> products = repository.findAll().spliterator();
-        return StreamSupport.stream(products, false).collect(Collectors.toList());
-    }
+@ResponseBody
+@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+public List<Product> getAll() {
+    System.out.println(">>>> getAll, but faster");
+    Spliterator<Product> products = repository.findAll().spliterator();
+    return StreamSupport.stream(products, false).collect(Collectors.toList());
+}
 ----
 image::images/catalog-controller-updated.png[Catalog Controller Updated- Java code, 700]
 
