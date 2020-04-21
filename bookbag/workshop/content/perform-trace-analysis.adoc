@@ -75,7 +75,7 @@ image::images/jaeger-trace-delay-view.png[Jaeger - Trace Delay View, 700]
 
 *We are going to only focus on distributed traces with 20 spans.*
 
-On the right hand side, you have information like the duration.
+On the right-hand side, you have information like the duration.
 One request takes **more than 500ms** which you could judge as *normal* but ...
 
 `*Let’s click on a trace title bar.*`
@@ -114,11 +114,11 @@ public List<Product> getAll() {
 }
 ----
 
-And yes, this burns your eyes, right?! Basically nobody could understand what the developer attempted to achieve but we do not have the time for that.
+And yes, this burns your eyes, right?! Basically nobody could understand what the developer attempted to achieve, but we do not have the time for that.
 This piece of code is a part of the `**getAll()**` method which returns the list of all products from the database.
 As you are a Java expert, you are about to create a masterpiece by both simplifying the code and increasing performance.
 
-Lets fix it! To do it we will use a new tool called https://github.com/Maistra/istio-workspace[Istio Workspace].
+Let's fix it! To do it we will use a new tool called https://github.com/Maistra/istio-workspace[Istio Workspace].
 
 '''
 
@@ -133,7 +133,7 @@ The key value proposition is to allow you run service you are working on locally
 
 This way you can use your favourite tools and avoid making your machine sweating from trying to run "the whole cloud" where your application is deployed.
 
-Additionally you can develop and test your changes without interfering with other users. Only you would be able to see your changes before they hit the production.
+Additionally, you can develop and test your changes without interfering with other users. Only you would be able to see your changes before they hit the production.
 
 * Do you have confidence that your Test and Stage environments reflect reality? 
 * Are they easy to keep up-to-date with production? 
@@ -182,7 +182,7 @@ Then `**select the command 'Catalog - Route Traffic to local'**`
 
 image::images/che-catalog-ike.png[Che - Catalog Route ike, 500]
 
-This command will deploy new version of the service which you can access by using special routing header `**ike-session-id=lab3**`.
+This command will deploy a new version of the service which you can access by using special routing header `**ike-session-id=lab3**`.
 
 image::images/new-catalog-service.png[New Catalog Deployed, 700]
 
@@ -210,7 +210,7 @@ We can also see directly in the console of your link:{CHE_URL}[Workspace^], that
 
 image::images/ike-develop-catalog-hit.png[Accessing new version of Catalog Service in Che, 700]
 
-Moreover we can see improvements in the response time as well:
+Moreover, we can see improvements in the response time as well:
 
 image::images/ike-develop-catalog-hit-jaeger.png[New traces, 800]
 

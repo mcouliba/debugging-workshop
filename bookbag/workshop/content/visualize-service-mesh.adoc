@@ -25,7 +25,7 @@ Red Hat OpenShift Container Platform provides services to get observability of a
 image::images/kiali-logo.png[Kiali,400]
 
 A Microservice Architecture breaks up the monolith into many smaller pieces that are composed together. 
-Patterns to secure the communication between services like fault tolerance (via timeout, retry, circuit breaking, etc.) 
+Patterns to secure the communication between services like fault tolerance (via a timeout, retry, circuit breaking, etc.)
 have come up as well as distributed tracing to be able to see where calls are going.
 
 A service mesh can now provide these services on a platform level and frees the application writers from those tasks. 
