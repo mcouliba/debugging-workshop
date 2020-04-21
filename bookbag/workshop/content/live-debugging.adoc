@@ -215,21 +215,6 @@ If it looks ok we are ready to roll it out to production!
 
 You can now stop `ike` tool in the terminal by pressing Ctrl+C. This will result in undeploying our special instance which we just used for debugging purposes.
 
-
-=== Deploying on production
-
-In your link:{CHE_URL}[Workspace^], via the command menu (Cmd+Shift+P ⌘⇧P on macOS or Ctrl+Shift+P ⌃⇧P on Windows and Linux),
-
-**run** `**Task: Run Task... ->  che: oc build inventory service**`
-
-image::images/che-runtask.png[Che - RunTask, 500]
-
-image::images/che-buildinventory.png[Che - Build Inventory Service, 500]
-
-When the container is rebuilt and deployed, point your browser at the Web route and verify 
-that the inventory status is visible for all products. The suspicious product should show
-the inventory status as **Not in Stock**.
-
 '''
 
 === CONGRATULATIONS!!!
