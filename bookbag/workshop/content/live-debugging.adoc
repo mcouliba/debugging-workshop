@@ -36,16 +36,17 @@ The logging system can provide two views:
 * **Project logs** - access controlled view to specific project logs for running containers and project resources. Our case in this Workshop. 
 * **Ops view** - aggregate logging of all projects across the cluster, in addition to platform logs (nodes, docker, and masters, for example). 
 
-https://docs.openshift.com/container-platform/3.11/install_config/aggregate_logging.html#aggregate-logging-kibana[Additionnal information^]
+https://docs.openshift.com/container-platform/3.11/install_config/aggregate_logging.html#aggregate-logging-kibana[Additional information^]
 
-Log management plays a vital role when we encounter an error in the application. If we do not manage the logs, it will be difficult in any application, especially in microservices architecture, to find the problem and fix it. For our application with lots of microservices we have to identify interesting traces and Kibana is offering an nice User Interface with a search field to explore and to analyze logs files easily. Whenever we get some error in the application(s), we can get the error details and analyze them in a simple way.
+Log management plays a vital role when we encounter an error in the application. If we do not manage the logs, it will be difficult in any application, especially in microservices architecture, to find the problem and fix it. For our application with lots of microservices we have to identify interesting traces and Kibana is offering
+nice User Interface with a search field to explore and to analyze logs files easily. Whenever we get some error in the application(s), we can get the error details and analyze them in a simple way.
 --
 
 '''
 
 === Investigate The Bug
 
-**CoolStore** application seems to have a bug that causes the inventory status for one of the products not to be displayed in the web interface.
+**CoolStore** application seems to have a bug that causes the inventory status for one of the products not to be displayed on the page.
 
 image::images/debug-coolstore-bug.png[Inventory Status Bug, 800]
 
@@ -80,8 +81,7 @@ image::images/jaeger-trace-inventory.png[Jaeger - Trace Inventory , 600]
 
 image::images/jaeger-trace-inventory-details.png[Jaeger - Trace Inventory , 800]
 
-No response came back from `**Inventory Service**` for the product id `**444436**` and that seems to be the reason the inventory status is not displayed
-on the web interface.
+No response came back from `**Inventory Service**` for the product id `**444436**` and that seems to be the reason the inventory status is not displayed.
 
 Let's debug the `**Inventory Service**` to get to the bottom of this!
 
@@ -95,12 +95,12 @@ Similarly to previous lab, we will leverage **Istio Workspace** tool to start **
 First, we have to start Quarkus-based `Inventory Service` in the `dev` mode. This is achieved by `quarkus:dev` Maven goal.
 This will allow us to:
 
-. attach debugger to running service.
+. attach the debugger to running service.
 . reload code without restarts.
 
 We will also set header to `lab4`, so we can reach our instance and debug it where all the other users will still rely on the production instance.
 
-IMPORTANT: Having debugger attached to the production instance will result in halting the whole system for every user. We definitely don't what this to happen. And that's why `Istio Workspace` was born.
+IMPORTANT: Having debugger attached to the production instance will result in halting the whole system for every user. We definitely don't want this to happen. That's why `Istio Workspace` was born.
 
 In your link:{CHE_URL}[Workspace^], `**click on 'Terminal' -> 'Run Task...'**`
 
@@ -110,7 +110,7 @@ Then `**select the command 'Inventory - Route Traffic to local'**`
 
 image::images/che-inventory-ike.png[Che - Inventory Route ike, 500]
 
-Next, we have to configure remote debugging session. By default, Quarkus starts remote debugger on port `5005`, so let's attach debugger to it.
+Next, we have to configure remote debugging session. By default, Quarkus starts the remote debugger on port `5005`, so let's attach debugger to it.
 
 image::images/che-attach-debugger.png[Che - Attach Debugger, 700]
 
@@ -147,7 +147,7 @@ image::images/che-breakpoint.png[Che - Breakpoint, 700]
 
 Additionally, we can narrow breakpoint capture by enabling a condition `itemId.equals("444436")`.
 
-Right-click on the breakpoint and select `**Edit Breakpoint..**` option.
+Right-click on the breakpoint and select `**Edit Breakpoint...**` option.
 
 image::images/che-conditional-breakpoint.png[Che - Edit Breakpoint, 700]
 
@@ -169,15 +169,15 @@ image::images/che-stepover.png[Che - Step Over, 900]
 
 Can you spot the bug now? 
 
-**Look at the Variables window** on the left hand side. The retrieved **inventory** object is `**null**`!
+**Look at the Variables window** on the left-hand side. The retrieved **inventory** object is `**null**`!
 
 The non-existing product id is not a problem on its own. It simply could mean this product is discontinued and removed
-from the Inventory database but it's not removed from the product catalog database yet.
-The bug is however caused because the code returns this **null** value instead of a sensible REST response.
+from the Inventory database, but it's not removed from the product catalog database yet.
+However, the bug occurs because the code returns **null** value instead of a sensible REST response.
 If the product id does not exist, a proper JSON response stating a zero inventory should be  returned instead of **null**.
 
 **Click on the** _Resume_ **icon** to continue the code execution and then **on the** _Stop_ **icon** to
-end the debug session.
+end the debugging session.
 
 image::images/che-end.png[Che - End, 900]
 
@@ -207,7 +207,7 @@ public Inventory getAvailability(@PathParam("itemId") String itemId) {
 }
 ----
 
-After changing this logic let's access link:{COOLSTORE_HOMEPAGE}/#!/?route=lab4[] to verify how it works now.
+After changing this logic, lets access link:{COOLSTORE_HOMEPAGE}/#!/?route=lab4[] to verify how it works now.
 
 image::images/debug-coolstore-bug-fixed.png[Inventory Status Bug Fixed, 800]
 

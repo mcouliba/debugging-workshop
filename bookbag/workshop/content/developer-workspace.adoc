@@ -50,7 +50,7 @@ As an open-source project, the core goals of https://access.redhat.com/products/
 
 * **Accelerate project and developer onboarding:** As a zero-install development environment that runs in your browser, https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  makes it easy for anyone to join your team and contribute to a project.
 * **Remove inconsistency between developer environments:** No more: “But it works on my machine.” Your code works exactly the same way in everyone’s environment.
-* **Provide built-in security and enterprise readiness:** As https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  becomes a viable replacement for VDI solutions, it must be secure and it must support enterprise requirements, such as role-based access control and the ability to remove all source code from developer machines.
+* **Provide built-in security and enterprise readiness:** As https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  becomes a viable replacement for VDI solutions, it must be secure, and it must support enterprise requirements, such as role-based access control and the ability to remove all source code from developer machines.
 
 To achieve those core goals, https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  provides:
 
@@ -89,7 +89,7 @@ Click on the below button called `**Developer Workspace**`
 [window=_blank, align="center"]
 image::images/developer-workspace-button.svg[Developer Workspace - Button, 300]
 
-Then login as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`, let's the magic happens...
+Then login as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`, let the magic happen...
 
 image::images/che-login.png[Che - Login, 500]
 
@@ -98,7 +98,7 @@ Once completed, you will have a fully functional Browser-based IDE with the sour
 image::images/che-workspace.png[Che - Workspace, 800]
 
 '''
-To go further with *RedHat Codeready Workspaces*  follow http://https://developers.redhat.com/products/codeready-workspaces/overview[this link]
+To go further with *RedHat CodeReady Workspaces*  follow http://https://developers.redhat.com/products/codeready-workspaces/overview[this link]
 
 === What is OpenShift Connect?
 
@@ -191,7 +191,7 @@ then log in. After you have authenticated to the web console, you will be presen
 list of projects that your user has permission to work with. 
 
 Select the `**Developer View**` then your `**staging-project{USER_ID}**` to be taken to the project overview page
-which will list all of the routes, services, deployments, and pods that you have
+which will list all the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.
 
