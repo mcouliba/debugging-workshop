@@ -110,30 +110,7 @@ Then `**select the command 'Inventory - Route Traffic to local'**`
 
 image::images/che-inventory-ike.png[Che - Inventory Route ike, 500]
 
-Next, we have to configure remote debugging session. By default, Quarkus starts the remote debugger on port `5005`, so let's attach debugger to it.
-
-image::images/che-attach-debugger.png[Che - Attach Debugger, 700]
-
-Alternatively you can simply paste JSON below to `.theia/launch.json`
-
-[source,json]
-.launch.json
-----
-{
-  "version": "0.2.0",
-  "configurations": [
-      {
-          "type": "java",
-          "name": "Debug (Attach)",
-          "request": "attach",
-          "hostName": "localhost",
-          "port": 5005
-      }
-  ]
-}
-----
-
-Once done, your can start debugging from the **Debug Mode** as you can see the screenshot below:
+Next, you start debugging by `**clicking on Debug -> Start Debugging**`
 
 image::images/che-debugmode.png[Che - Debug Mode, 700]
 
