@@ -39,7 +39,7 @@ items:
           - secretRef:
               name: inventory-8080
           image: quay.io/mcouliba/gateway-vertx:3.1_debugging
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
             httpGet:
