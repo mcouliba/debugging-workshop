@@ -59,7 +59,7 @@ items:
                 apiVersion: v1
                 fieldPath: metadata.namespace
           image: quay.io/mcouliba/inventory-quarkus:3.1_debugging
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           livenessProbe:
             exec:
               command:
