@@ -19,7 +19,7 @@ commands:
         command: >-
           echo "------ START ------";
           pkill ike;
-          ike develop --deployment catalog-v1 --run 'mvn spring-boot:run' --port 9000:8080 --route header:ike-session-id=lab3;
+          TELEPRESENCE_VERSION=0.104 ike develop --deployment catalog-v1 --run 'mvn spring-boot:run' --port 9000:8080 --route header:ike-session-id=lab3;
           echo "------ END ------";
         component: workshop-tools
   - name: 'Inventory - Route Traffic to Local'
@@ -29,7 +29,7 @@ commands:
         command: >-
           echo "------ START ------";
           pkill ike;
-          ike develop -d inventory-v1 -p 8080 -r 'mvn compile quarkus:dev' --route header:ike-session-id=lab4;
+          TELEPRESENCE_VERSION=0.104 ike develop -d inventory-v1 -p 8080 -r 'mvn compile quarkus:dev' --route header:ike-session-id=lab4;
           echo "------ END ------";
         component: workshop-tools
   - name: 'Connect Local Java Debugger'
