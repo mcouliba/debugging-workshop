@@ -70,7 +70,7 @@ https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Worksp
 [NOTE]
 .Devfile
 ====
-https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] uses https://access.redhat.com/products/red-hat-codeready-workspacesdocs/che-7/making-a-workspace-portable-using-a-devfile/[Devfiles^] to automate the provisioning 
+https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] uses https://access.redhat.com/documentation/en-us/red_hat_codeready_workspaces/2.1/html-single/end-user_guide/index#configuring-a-workspace-using-a-devfile_crw/[Devfiles^] to automate the provisioning 
 of a specific workspace by defining:
 
 * projects to clone
