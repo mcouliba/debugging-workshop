@@ -166,11 +166,6 @@ public List<Product> getAll() {
 ----
 image::images/catalog-controller-updated.png[Catalog Controller Updated- Java code, 700]
 
-[IMPORTANT]
-====
-Do not forget to import the missing packages.
-====
-
 With those changes in place we can now test it. But does it mean we have to go through the whole `**build -> deploy -> test**` cycle? That can take a couple of minutes.
 Luckily, with Istio Workspace we can now start service with our changes locally, but in a way like it would be running as part of the application.
 
