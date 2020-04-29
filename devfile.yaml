@@ -12,90 +12,38 @@ components:
     type: chePlugin
     alias: workshop-tools
 commands:
-  - name: 'Inventory - Run (Dev Mode)'
-    actions:
-      - workdir: /projects/workshop/inventory-quarkus
-        type: exec
-        command: 'mvn compile quarkus:dev'
-        component: workshop-tools
-  - name: 'Inventory - Build'
-    actions:
-      - workdir: /projects/workshop/inventory-quarkus
-        type: exec
-        command: mvn clean package -DskipTests
-        component: workshop-tools
-  - name: Inventory - Ike Develop
-    actions:
-      - workdir: /projects/workshop/inventory-quarkus
-        type: exec
-        command: >-
-          ike develop -d inventory-v1 -p 8080 -r 'mvn compile quarkus:dev'
-          --route header:ike-session-id=lab4
-        component: workshop-tools
-  - name: 'Catalog - Build'
-    actions:
-      - workdir: /projects/workshop/catalog-spring-boot
-        type: exec
-        command: mvn clean package -DskipTests
-        component: workshop-tools
-  - name: 'Catalog - Run'
-    actions:
-      - workdir: /projects/workshop/catalog-spring-boot
-        type: exec
-        command: mvn spring-boot:run
-        component: workshop-tools
-  - name: Catalog - Ike Develop
+  - name: 'Catalog - Route Traffic to Local'
     actions:
       - workdir: /projects/workshop/catalog-spring-boot
         type: exec
         command: >-
-          ike develop --deployment catalog-v1 --run 'mvn spring-boot:run'
-          --port 9000:8080 --route header:ike-session-id=lab3
+          echo "------ START ------";
+          pkill ike;
+          ike develop --deployment catalog-v1 --run 'mvn spring-boot:run' --port 9000:8080 --route header:ike-session-id=lab3;
+          echo "------ END ------";
         component: workshop-tools
-  - name: 'Gateway - Build'
+  - name: 'Inventory - Route Traffic to Local'
     actions:
-      - workdir: /projects/workshop/gateway-vertx
+      - workdir: /projects/workshop/inventory-quarkus
         type: exec
-        command: 'mvn clean package -DskipTests'
-        component: workshop-tools
-  - name: 'GitOps - Export'
-    actions:
-      - workdir: /projects/workshop/gitops
-        type: exec
-        command: ./gitops_exporter.sh my-project${CHE_WORKSPACE_NAMESPACE#user} staging-project${CHE_WORKSPACE_NAMESPACE#user}
-        component: workshop-tools
-  - name: 'Gateway - Generate Traffic'
-    actions:
-      - workdir: /projects/workshop/scripts
-        type: exec
-        command: ./runGatewayService.sh staging-project${CHE_WORKSPACE_NAMESPACE#user}
-        component: workshop-tools
-  - name: 'Pipeline - Start Mine'
-    actions:
-      - type: exec
         command: >-
-          echo "------ START ------" &&
-          tkn pipeline start my-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace staging-project${CHE_WORKSPACE_NAMESPACE#user} &&
-          echo "------  END  ------"
+          echo "------ START ------";
+          pkill ike;
+          ike develop -d inventory-v1 -p 8080 -r 'mvn compile quarkus:dev' --route header:ike-session-id=lab4;
+          echo "------ END ------";
         component: workshop-tools
-  - name: 'Pipeline - Start Full'
+  - name: 'Connect Local Java Debugger'
     actions:
-      - type: exec
-        command: >-
-          echo "------ START ------" &&
-          tkn pipeline start application-pipeline --resource component-git=inventory-git --param componentName=inventory-coolstore --serviceaccount pipeline --namespace staging-project${CHE_WORKSPACE_NAMESPACE#user} &&
-          echo "------  END  ------"
-        component: workshop-tools
-  - name: 'Service Mesh - Deploy'
-    actions:
-      - type: exec
-        command: >-
-          oc patch dc/inventory-coolstore --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}' &&
-          oc patch dc/inventory-coolstore --patch '{"spec": {"template": {"spec": {"containers": [{"name": "inventory-coolstore", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}' &&
-          oc rollout latest dc/inventory-coolstore &&
-          oc rollout pause dc/gateway-coolstore &&
-          oc patch dc/gateway-coolstore --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}' &&
-          oc patch dc/gateway-coolstore --patch '{"spec": {"template": {"spec": {"containers": [{"name": "gateway-coolstore", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://127.0.0.1:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}' &&
-          oc rollout resume dc/gateway-coolstore
-        component: workshop-tools
-  
+      - type: vscode-launch
+        referenceContent: |
+          {
+          "version": "0.2.0",
+          "configurations": [
+            {
+              "type": "java",
+              "name": "Debug (Attach) - Local",
+              "request": "attach",
+              "hostName": "localhost",
+              "port": 5005
+            }]
+          }

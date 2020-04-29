@@ -50,7 +50,7 @@ As an open-source project, the core goals of https://access.redhat.com/products/
 
 * **Accelerate project and developer onboarding:** As a zero-install development environment that runs in your browser, https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  makes it easy for anyone to join your team and contribute to a project.
 * **Remove inconsistency between developer environments:** No more: “But it works on my machine.” Your code works exactly the same way in everyone’s environment.
-* **Provide built-in security and enterprise readiness:** As https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  becomes a viable replacement for VDI solutions, it must be secure and it must support enterprise requirements, such as role-based access control and the ability to remove all source code from developer machines.
+* **Provide built-in security and enterprise readiness:** As https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  becomes a viable replacement for VDI solutions, it must be secure, and it must support enterprise requirements, such as role-based access control and the ability to remove all source code from developer machines.
 
 To achieve those core goals, https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^]  provides:
 
@@ -70,7 +70,7 @@ https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Worksp
 [NOTE]
 .Devfile
 ====
-https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] uses https://access.redhat.com/products/red-hat-codeready-workspacesdocs/che-7/making-a-workspace-portable-using-a-devfile/[Devfiles^] to automate the provisioning 
+https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] uses https://access.redhat.com/documentation/en-us/red_hat_codeready_workspaces/2.1/html-single/end-user_guide/index#configuring-a-workspace-using-a-devfile_crw/[Devfiles^] to automate the provisioning 
 of a specific workspace by defining:
 
 * projects to clone
@@ -87,20 +87,17 @@ Click on the below button called `**Developer Workspace**`
 
 [link={CHE_URL}/dashboard/#/ide/user{USER_ID}/wksp-debugging]
 [window=_blank, align="center"]
-image::images/developer-workspace-button.png[Developer Workspace - Button, 300]
+image::images/developer-workspace-button.svg[Developer Workspace - Button, 300]
 
-Then login as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`, click on `**Allow selected permissions**` and let's the magic happens...
+Then login as `**user{USER_ID}/{OPENSHIFT_PASSWORD}**`, let the magic happen...
 
 image::images/che-login.png[Che - Login, 500]
-
-image::images/che-openshift-authorize-access.png[Che - OpenShift OAuth Authorize Access, 600]
 
 Once completed, you will have a fully functional Browser-based IDE with the source code already imported.
 
 image::images/che-workspace.png[Che - Workspace, 800]
 
 '''
-To go further with *RedHat Codeready Workspaces*  follow https://developers.redhat.com/products/codeready-workspaces/overview[this link]
 
 === What is OpenShift Connect?
 
@@ -193,7 +190,7 @@ then log in. After you have authenticated to the web console, you will be presen
 list of projects that your user has permission to work with. 
 
 Select the `**Developer View**` then your `**staging-project{USER_ID}**` to be taken to the project overview page
-which will list all of the routes, services, deployments, and pods that you have
+which will list all the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.
 

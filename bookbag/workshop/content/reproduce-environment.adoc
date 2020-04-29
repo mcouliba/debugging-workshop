@@ -66,7 +66,7 @@ From the **Application menu**, `*Click on 'Sync > Synchronize'*`.
 image::images/argocd-sync.png[Argo CD - Sync, 800]
 
 This task retrieves the manifests from the GitOps Repository and performs _kubectl apply_ command of 
-the manifests. Your application is now running and you can now view its resource components, 
+the manifests. Your application is now running. You can now view its resource components,
 logs, events, and assessed health status.
 
 `*Click on your 'staging-project{USER_ID}' application*` and you should see everything in green.
@@ -89,7 +89,7 @@ image::images/Open-TerminalCRW.png[How to open _New Terminal through CRW, 800]
 [source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
-$ cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
+cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -111,7 +111,7 @@ EOF
 [source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
-$ cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
+cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -139,9 +139,7 @@ EOF
 [source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
-$ oc set env deployment/web \
-    COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.{APPS_HOSTNAME_SUFFIX}/staging-project{USER_ID} \
-    -n staging-project{USER_ID}
+oc set env deployment/web COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.{APPS_HOSTNAME_SUFFIX}/staging-project{USER_ID} -n staging-project{USER_ID}
 ----
 
 '''

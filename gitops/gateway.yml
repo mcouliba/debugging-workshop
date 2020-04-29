@@ -20,10 +20,10 @@ items:
       app.kubernetes.io/instance: gateway
     strategy:
       activeDeadlineSeconds: 21600
-      recreateParams:
+      rollingParams:
         timeoutSeconds: 600
       resources: {}
-      type: Recreate
+      type: Rolling
     template:
       metadata:
         annotations:

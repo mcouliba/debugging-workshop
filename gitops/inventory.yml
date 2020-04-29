@@ -35,7 +35,7 @@ items:
         maxUnavailable: 25%
         timeoutSeconds: 3600
         updatePeriodSeconds: 1
-      type: Recreate
+      type: Rolling
     template:
       metadata:
         annotations:
@@ -134,17 +134,6 @@ items:
       resources: {}
       activeDeadlineSeconds: 21600
     triggers:
-      - type: ImageChange
-        imageChangeParams:
-          automatic: true
-          containerNames:
-            - mariadb
-          from:
-            kind: ImageStreamTag
-            namespace: openshift
-            name: 'mariadb:10.2'
-          lastTriggeredImage: >-
-            image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8
       - type: ConfigChange
     replicas: 1
     revisionHistoryLimit: 10
@@ -219,8 +208,7 @@ items:
               - name: inventory-mariadb-data
                 mountPath: /var/lib/mysql/data
             terminationMessagePolicy: File
-            image: >-
-              image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8
+            image: image-registry.openshift-image-registry.svc:5000/openshift/mariadb:10.2
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst

@@ -34,7 +34,7 @@ items:
         maxUnavailable: 25%
         timeoutSeconds: 3600
         updatePeriodSeconds: 1
-      type: Recreate
+      type: Rolling
     template:
       metadata:
         annotations:
@@ -163,8 +163,7 @@ items:
               secretKeyRef:
                 key: database-name
                 name: catalog-postgresql
-          image: >-	
-            image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:e25e66d7356e0ab8f7d443a8f4344e87a323c11d1957030a2f6b93f23bbe6d0b
+          image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:9.6
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -210,15 +209,6 @@ items:
           emptyDir: {}
     test: false
     triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - postgresql
-        from:
-          kind: ImageStreamTag
-          name: postgresql:9.6
-          namespace: openshift
-      type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
   kind: Service

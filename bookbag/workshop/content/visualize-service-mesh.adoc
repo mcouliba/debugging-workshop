@@ -7,14 +7,13 @@
 
 _15 MINUTES PRACTICE_
 
-The **Mysterious Application** in your *Developer Workspaces* is now up and running. It is composed of several components, 
+The **Mysterious Application** in your *Developer Workspace* is now up and running. It is composed of several components, 
 but so far, you have no clue about how the application is working. Going all over this application and debugging it completely 
 blindfolded is time consuming and a crazy bid as Malorie does in *Bird Box*.
 
+.Bird Box. Susanne Bier (Netflix)
+[caption=" "]
 image::images/birdbox.png[BirdBox, 500]
-
-[.text-center]
-https://ewedit.files.wordpress.com/2019/01/bird_box_018.jpg[Source: https://ewedit.files.wordpress.com/2019/01/bird_box_018.jpg^]
 
 Red Hat OpenShift Container Platform provides services to get observability of applications and to understand how different components are interacting with each other.
 
@@ -26,7 +25,7 @@ Red Hat OpenShift Container Platform provides services to get observability of a
 image::images/kiali-logo.png[Kiali,400]
 
 A Microservice Architecture breaks up the monolith into many smaller pieces that are composed together. 
-Patterns to secure the communication between services like fault tolerance (via timeout, retry, circuit breaking, etc.) 
+Patterns to secure the communication between services like fault tolerance (via a timeout, retry, circuit breaking, etc.)
 have come up as well as distributed tracing to be able to see where calls are going.
 
 A service mesh can now provide these services on a platform level and frees the application writers from those tasks. 
@@ -92,23 +91,16 @@ Let's fix it!!
 === Check the Catalog Service Configuration
 
 In the link:{OPENSHIFT_CONSOLE_URL}[OpenShift Web Console^], from the **Developer view**,
-**click on** `**Advanced (1) -> Search (2)**`, **select** `**ConfigMap(3)**` resource and click on `**catalog**`.
+**click on** `**Advanced (1) -> Search (2)**`, **select** `**ConfigMap(3)**` resource and click on `**catalog(4)**`.
 
-image::images/catalog-service-config.png[OpenShift - Catalog service config, 900]
-
-image::images/openshift-catalog-configmap.png[OpenShift - Catalog ConfigMap, 900]
+image::images/catalog-service-config.png[OpenShift - Catalog service config, 1000]
 
 Have a look on the Data Section. *Catalog Service* is configured with the development parameters. 
 Indeed, it is currently configured with an InMemory Database (H2), which is used for development purposes only.
 
-image::images/select-configmap.png[OpenShift - Select ConfigMap , 900]
-
-image::images/edit-configmap.png[OpenShift - Edit ConfigMap , 900]
-
-
 image::images/openshift-catalog-configmap-h2.png[OpenShift - Catalog ConfigMap H2, 900]
 
-`*Update this ConfigMap*` with the following content:
+** Connect the Catalog Service to the PostgreSQL database by editing this ConfigMap**  with the following content:
 
 [source,shell]
 ----
@@ -124,6 +116,8 @@ data:
     spring.jpa.hibernate.ddl-auto=create
     spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ----
+
+**Click on** `** the tab 'YAML' of the 'CM catalog' and update the content**`.
 
 image::images/update-configmap.png[OpenShift - Update Configmap, 900]
 
