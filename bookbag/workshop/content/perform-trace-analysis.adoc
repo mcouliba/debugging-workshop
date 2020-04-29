@@ -177,7 +177,7 @@ Then `**select the command 'Catalog - Route Traffic to local'**`
 
 image::images/che-catalog-ike.png[Che - Catalog Route ike, 500]
 
-This command will deploy a new version of the service which you can access by using special routing header `**ike-session-id=lab3**`.
+This command will deploy a new version of the service which you can access by using special routing header.
 
 image::images/new-catalog-service.png[New Catalog Deployed, 700]
 
