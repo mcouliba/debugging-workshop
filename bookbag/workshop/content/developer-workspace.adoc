@@ -98,7 +98,6 @@ Once completed, you will have a fully functional Browser-based IDE with the sour
 image::images/che-workspace.png[Che - Workspace, 800]
 
 '''
-To go further with *RedHat CodeReady Workspaces*  follow http://https://developers.redhat.com/products/codeready-workspaces/overview[this link]
 
 === What is OpenShift Connect?
 
