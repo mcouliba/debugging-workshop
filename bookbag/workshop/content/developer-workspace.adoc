@@ -17,7 +17,7 @@ Your manager suddenly comes out of his/her office and walks to you with the very
 Indeed, the new release of a ***Mysterious Application*** is planned for tonight (everything is always urgent) and it seems to contain some bugs.
 
 And of course, the developer who worked on this last release is now drinking some mojitos on the paradise island and you are the 
-only one available who can save the situation. Your manager points the source code https://github.com/mcouliba/cloud-native-labs/tree/debugging[Mysterious Application^] out, 
+only one available who can save the situation. Your manager points the source code https://github.com/mcouliba/debugging-workshop/tree/3.1[Mysterious Application^] out, 
 gives you a gentle tap on the shoulder and says "Bon Courage!".
 
 At that moment in time, you feel like you are on an island, but not the same one than your colleague.
@@ -79,7 +79,7 @@ of a specific workspace by defining:
 * tools that you need
 * application runtime definition
 
-Providing a https://github.com/mcouliba/debugging-workshop/blob/master/devfile.yaml[devfile.yaml^] file inside a Git source repository signals to https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] to configure the project and runtime according 
+Providing a https://github.com/mcouliba/debugging-workshop/blob/3.1/devfile.yaml[devfile.yaml^] file inside a Git source repository signals to https://access.redhat.com/products/red-hat-codeready-workspaces[CodeReady Workspaces^] to configure the project and runtime according 
 to this file.
 ====
 
