@@ -89,7 +89,7 @@ image::images/Open-TerminalCRW.png[How to open _New Terminal through CRW, 800]
 [source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
-cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
+cat <<EOF | oc apply --namespace=staging-project{USER_ID} -f -
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -111,7 +111,7 @@ EOF
 [source,shell,subs="{markup-in-source}"]
 .>_ workshop-tools terminal
 ----
-cat <<EOF | oc create --namespace=staging-project{USER_ID} -f -
+cat <<EOF | oc apply --namespace=staging-project{USER_ID} -f -
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
