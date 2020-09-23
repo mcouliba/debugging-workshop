@@ -9,8 +9,8 @@
   <name>CoolStore Catalog Service</name>
   <description>CoolStore Catalog Service with Spring Boot</description>
   <properties>
-    <spring-boot.version>2.1.6.SP3-redhat-00001</spring-boot.version>
-    <spring-boot.maven.plugin.version>2.1.4.RELEASE-redhat-00001</spring-boot.maven.plugin.version>
+    <spring-boot.version>2.2.6.SP2</spring-boot.version>
+    <spring-boot.maven.plugin.version>2.2.6.RELEASE</spring-boot.maven.plugin.version>
     <spring.k8s.bom.version>1.0.3.RELEASE</spring.k8s.bom.version>
     <fabric8.maven.plugin.version>4.3.0</fabric8.maven.plugin.version>
     <postgresql.version>42.2.4</postgresql.version>
@@ -30,8 +30,8 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>me.snowdrop</groupId>
-        <artifactId>spring-boot-bom</artifactId>
+        <groupId>dev.snowdrop</groupId>
+        <artifactId>snowdrop-dependencies</artifactId>
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
