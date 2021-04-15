@@ -208,7 +208,7 @@ items:
               - name: inventory-mariadb-data
                 mountPath: /var/lib/mysql/data
             terminationMessagePolicy: File
-            image: image-registry.openshift-image-registry.svc:5000/openshift/mariadb:10.2
+            image: image-registry.openshift-image-registry.svc:5000/openshift/mariadb:10.3-el8
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst
