@@ -6,11 +6,19 @@ projects:
     source:
       location: 'https://github.com/mcouliba/debugging-workshop.git'
       type: git
-      branch: "3.1"
+      branch: "5.0"
 components:
-  - id: redhat/workshop-tools/3.1
+  - reference: https://raw.githubusercontent.com/mcouliba/che-plugin-registry/5.0/v3/plugins/redhat/workshop-tools/5.0.0/meta.yaml
     type: chePlugin
     alias: workshop-tools
+    env:
+      - name: MAVEN_OPTS
+        value: '-Xmx2048m -Duser.home=/home/theia'
+      - name: MAVEN_MIRROR_URL
+        value: http://nexus.opentlc-shared.svc:8081/repository/maven-all-public
+    volumes:
+      - name: kubefolder
+        containerPath: /home/theia/.kube
 commands:
   - name: 'Catalog - Route Traffic to Local'
     actions:
