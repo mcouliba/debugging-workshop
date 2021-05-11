@@ -163,7 +163,7 @@ items:
               secretKeyRef:
                 key: database-name
                 name: catalog-postgresql
-          image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:9.6
+          image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
