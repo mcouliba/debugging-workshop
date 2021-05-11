@@ -20,6 +20,13 @@ components:
       - name: kubefolder
         containerPath: /home/theia/.kube
 commands:
+  - name: 'OpenShift - Login'
+    actions:
+      - workdir: /projects/workshop
+        type: exec
+        command: >-
+          oc login $(oc whoami --show-server) --username=${CHE_WORKSPACE_NAMESPACE} --password=openshift --insecure-skip-tls-verify;
+        component: workshop-tools
   - name: 'Catalog - Route Traffic to Local'
     actions:
       - workdir: /projects/workshop/catalog-spring-boot
