@@ -4,8 +4,6 @@ items:
 - kind: Deployment
   apiVersion: apps/v1
   metadata:
-    annotations:
-      app.openshift.io/connects-to: gateway
     name: web
     labels:
       app: coolstore

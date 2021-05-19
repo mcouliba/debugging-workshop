@@ -4,8 +4,6 @@ items:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
-    annotations:
-      app.openshift.io/connects-to: catalog,inventory
     labels:
       app: coolstore
       app.kubernetes.io/instance: gateway
