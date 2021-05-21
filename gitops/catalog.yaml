@@ -5,16 +5,16 @@ items:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: coolstore
+      app: catalog
       version: v1
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
       app.kubernetes.io/name: java
     name: catalog-v1
   spec:
     replicas: 1
     selector:
-      app: coolstore
+      app: catalog
       version: v1
       app.kubernetes.io/instance: catalog
     strategy:
@@ -38,7 +38,7 @@ items:
         annotations:
           sidecar.istio.io/inject: "true"
         labels:
-          app: coolstore
+          app: catalog
           version: v1
           app.kubernetes.io/instance: catalog
       spec:
@@ -113,16 +113,16 @@ items:
       openshift.io/generated-by: OpenShiftNewApp
       template.alpha.openshift.io/wait-for-ready: "true"
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog-postgresql
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
       app.kubernetes.io/name: postgresql
     name: catalog-postgresql
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog-postgresql
     strategy:
       activeDeadlineSeconds: 21600
@@ -141,7 +141,7 @@ items:
         annotations:
           openshift.io/generated-by: OpenShiftNewApp
         labels:
-          app: coolstore
+          app: catalog
           app.kubernetes.io/instance: catalog-postgresql
       spec:
         containers:
@@ -215,9 +215,9 @@ items:
       prometheus.io/port: "9779"
       prometheus.io/scrape: "true"
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
     name: catalog
   spec:
     ports:
@@ -226,7 +226,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog
     sessionAffinity: None
     type: ClusterIP
@@ -237,9 +237,9 @@ items:
       openshift.io/generated-by: OpenShiftNewApp
       template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog-postgresql
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
     name: catalog-postgresql
   spec:
     ports:
@@ -248,7 +248,7 @@ items:
       protocol: TCP
       targetPort: 5432
     selector:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog-postgresql
     sessionAffinity: None
     type: ClusterIP
@@ -266,9 +266,9 @@ items:
   metadata:
     name: catalog
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
 - apiVersion: v1
   data:
     database-name: Y2F0YWxvZ2Ri
@@ -282,9 +282,9 @@ items:
       template.openshift.io/expose-password: '{.data[''database-password'']}'
       template.openshift.io/expose-username: '{.data[''database-user'']}'
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
     name: catalog-postgresql
   type: Opaque
 - apiVersion: v1
@@ -296,9 +296,9 @@ items:
     annotations:
       component-port: "8080"
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
     name: catalog-8080
   type: Opaque
 - apiVersion: v1
@@ -310,9 +310,9 @@ items:
     annotations:
       component-port: "8443"
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
     name: catalog-8443
   type: Opaque
 - apiVersion: v1
@@ -325,9 +325,9 @@ items:
       app.kubernetes.io/component-source-type: binary
       component-port: "8778"
     labels:
-      app: coolstore
+      app: catalog
       app.kubernetes.io/instance: catalog
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: catalog
     name: catalog-8778
   type: Opaque
 - apiVersion: networking.istio.io/v1alpha3

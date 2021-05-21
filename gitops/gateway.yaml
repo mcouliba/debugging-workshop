@@ -5,16 +5,16 @@ items:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: coolstore
+      app: gateway
       app.kubernetes.io/instance: gateway
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: gateway
       app.kubernetes.io/name: java
     name: gateway
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
-      app: coolstore
+      app: gateway
       app.kubernetes.io/instance: gateway
     strategy:
       activeDeadlineSeconds: 21600
@@ -27,7 +27,7 @@ items:
         annotations:
           sidecar.istio.io/inject: "true"
         labels:
-          app: coolstore
+          app: gateway
           app.kubernetes.io/instance: gateway
       spec:
         containers:
@@ -84,9 +84,9 @@ items:
       prometheus.io/port: "9779"
       prometheus.io/scrape: "true"
     labels:
-      app: coolstore
+      app: gateway
       app.kubernetes.io/instance: gateway
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: gateway
     name: gateway
   spec:
     ports:
@@ -95,7 +95,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: coolstore
+      app: gateway
       app.kubernetes.io/instance: gateway
     sessionAffinity: None
     type: ClusterIP

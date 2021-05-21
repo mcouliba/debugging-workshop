@@ -6,21 +6,21 @@ items:
   metadata:
     name: web
     labels:
-      app: coolstore
+      app: web
       app.kubernetes.io/instance: web
       app.kubernetes.io/name: nodejs
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: web
   spec:
     replicas: 1
     selector:
       matchLabels:
-        app: coolstore
+        app: web
         app.kubernetes.io/instance: web
     template:
       metadata:
         creationTimestamp: null
         labels:
-          app: coolstore
+          app: web
           app.kubernetes.io/instance: web
           maistra.io/expose-route: "true"
       spec:
@@ -50,9 +50,9 @@ items:
   kind: Service
   metadata:
     labels:
-      app: coolstore
+      app: web
       app.kubernetes.io/instance: web
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: web
     name: web
   spec:
     ports:
@@ -61,7 +61,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: coolstore
+      app: web
       app.kubernetes.io/instance: web
     sessionAffinity: None
     type: ClusterIP
@@ -69,10 +69,10 @@ items:
   kind: Route
   metadata:
     labels:
-      app: coolstore
+      app: web
       app.kubernetes.io/instance: web
       app.kubernetes.io/name: nodejs
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: web
     name: web
   spec:
     port:

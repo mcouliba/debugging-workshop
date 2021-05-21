@@ -5,16 +5,16 @@ items:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: coolstore
+      app: inventory
       version: v1
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
       app.kubernetes.io/name: java
     name: inventory-v1
   spec:
     replicas: 1
     selector:
-      app: coolstore
+      app: inventory
       version: v1
       app.kubernetes.io/instance: inventory
     revisionHistoryLimit: 2
@@ -39,7 +39,7 @@ items:
         annotations:
           sidecar.istio.io/inject: "true"
         labels:
-          app: coolstore
+          app: inventory
           version: v1
           app.kubernetes.io/instance: inventory
       spec:
@@ -120,9 +120,9 @@ items:
   metadata:
     name: inventory-mariadb
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory-mariadb
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
       app.kubernetes.io/name: mariadb
   spec:
     strategy:
@@ -137,13 +137,13 @@ items:
     revisionHistoryLimit: 10
     test: false
     selector:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory-mariadb
     template:
       metadata:
         creationTimestamp: null
         labels:
-          app: coolstore
+          app: inventory
           app.kubernetes.io/instance: inventory-mariadb
       spec:
         volumes:
@@ -219,9 +219,9 @@ items:
       prometheus.io/port: "9779"
       prometheus.io/scrape: "true"
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
     name: inventory
   spec:
     ports:
@@ -230,7 +230,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory
     sessionAffinity: None
     type: ClusterIP
@@ -239,9 +239,9 @@ items:
   metadata:
     name: inventory-mariadb
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory-mariadb
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
     annotations:
       template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
   spec:
@@ -251,7 +251,7 @@ items:
         port: 3306
         targetPort: 3306
     selector:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory-mariadb
     type: ClusterIP
     sessionAffinity: None
@@ -265,17 +265,17 @@ items:
   metadata:
     name: inventory
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
 - kind: Secret
   apiVersion: v1
   metadata:
     name: inventory-mariadb
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
     annotations:
       template.openshift.io/expose-database_name: '{.data[''database-name'']}'
       template.openshift.io/expose-password: '{.data[''database-password'']}'
@@ -296,9 +296,9 @@ items:
     annotations:
       component-port: "8080"
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
     name: inventory-8080
   type: Opaque
 - apiVersion: v1
@@ -310,9 +310,9 @@ items:
     annotations:
       component-port: "8443"
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
     name: inventory-8443
   type: Opaque
 - apiVersion: v1
@@ -324,9 +324,9 @@ items:
     annotations:
       component-port: "8778"
     labels:
-      app: coolstore
+      app: inventory
       app.kubernetes.io/instance: inventory
-      app.kubernetes.io/part-of: coolstore
+      app.kubernetes.io/part-of: inventory
     name: inventory-8778
   type: Opaque
 - apiVersion: networking.istio.io/v1alpha3
