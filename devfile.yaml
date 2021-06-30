@@ -10,17 +10,24 @@ projects:
       type: git
       branch: "5.0"
 components:
-  - reference: https://raw.githubusercontent.com/mcouliba/che-plugin-registry/5.0/v3/plugins/redhat/workshop-tools/5.0.1/meta.yaml
-    type: chePlugin
+  - type: chePlugin
+    id: redhat/java11/latest
+    preferences:
+      java.server.launchMode: Standard
+      java.autobuild.enabled: false
+  - type: dockerimage
+    image: 'quay.io/mcouliba/workshop-tools:5.0'
     alias: workshop-tools
+    memoryLimit: "4G"
+    mountSources: true
     env:
       - name: MAVEN_OPTS
-        value: '-Xmx2048m -Duser.home=/home/theia'
+        value: '-Xmx2048m -Duser.home=/home/developer'
       - name: MAVEN_MIRROR_URL
         value: http://nexus.opentlc-shared.svc:8081/repository/maven-all-public
     volumes:
       - name: kubefolder
-        containerPath: /home/theia/.kube
+        containerPath: /home/developer/.kube
 commands:
   - name: 'OpenShift - Login'
     actions:
