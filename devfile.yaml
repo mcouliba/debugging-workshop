@@ -18,13 +18,29 @@ components:
   - type: dockerimage
     image: 'quay.io/mcouliba/workshop-tools:5.0'
     alias: workshop-tools
-    memoryLimit: "4G"
+    memoryLimit: "3072M"
     mountSources: true
     env:
       - name: MAVEN_OPTS
         value: '-Xmx2048m -Duser.home=/home/developer'
       - name: MAVEN_MIRROR_URL
         value: http://nexus.opentlc-shared.svc:8081/repository/maven-all-public
+    endpoints:
+       - name: 8080-port
+         port: 8080
+         attributes:
+           protocol: http
+           public: 'false'
+       - name: 9000-port
+         port: 9000
+         attributes:
+           protocol: http
+           public: 'false'
+       - name: 5005-port
+         port: 5005
+         attributes:
+           protocol: http
+           public: 'false' 
     volumes:
       - name: kubefolder
         containerPath: /home/developer/.kube
