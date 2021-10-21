@@ -84,6 +84,7 @@ commands:
               "name": "Debug (Attach) - Local",
               "request": "attach",
               "hostName": "localhost",
-              "port": 5005
+              "port": 5005,
+              "projectName": "inventory-quarkus"
             }]
           }
