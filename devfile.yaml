@@ -8,7 +8,7 @@ projects:
     source:
       location: 'https://github.com/mcouliba/debugging-workshop.git'
       type: git
-      branch: "5.0"
+      branch: "5.1"
 components:
   - type: chePlugin
     id: redhat/java11/latest
@@ -16,7 +16,7 @@ components:
       java.server.launchMode: Standard
       java.autobuild.enabled: false
   - type: dockerimage
-    image: 'quay.io/mcouliba/workshop-tools:5.0'
+    image: 'quay.io/mcouliba/workshop-tools:5.1'
     alias: workshop-tools
     memoryLimit: "3072M"
     mountSources: true

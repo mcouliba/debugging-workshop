@@ -1,9 +1,0 @@
-name: Pragmatic Approach to Debug Microservices Applications on Openshift
-
-modules:
-    activate:
-        - developer-workspace
-        - reproduce-environment
-        - visualize-service-mesh
-        - perform-trace-analysis
-        - live-debugging
